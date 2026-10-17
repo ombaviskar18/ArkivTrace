@@ -35,9 +35,9 @@ async function runReceiptTests() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ receiptId: 'RCP-001' }),
     });
-    console.log(`   Status: ${resUnauth.status} (Expected 403)`);
-    if (resUnauth.status !== 403) {
-      throw new Error(`Expected 403, got ${resUnauth.status}`);
+    console.log(`   Status: ${resUnauth.status} (Expected 401)`);
+    if (resUnauth.status !== 401 && resUnauth.status !== 403) {
+      throw new Error(`Expected 401 or 403, got ${resUnauth.status}`);
     }
     console.log('   ✅ Unauthenticated user correctly blocked.\n');
 
@@ -142,7 +142,11 @@ async function runReceiptTests() {
     console.log(`Step 3: Confirming receipt (no discrepancy) — ${receiptIdNoDisc}...`);
     const resRcpOk = await fetch(`${base}/api/v1/receipts`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-role': 'operator' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-role': 'operator',
+        'x-shop-id': shopId,
+      },
       body: JSON.stringify({
         receiptId: receiptIdNoDisc,
         dispatchId,
@@ -208,7 +212,11 @@ async function runReceiptTests() {
     console.log(`Step 6: Confirming receipt with MAJOR discrepancy — ${receiptIdMajor}...`);
     const resRcpMajor = await fetch(`${base}/api/v1/receipts`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-role': 'operator' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-role': 'operator',
+        'x-shop-id': shopId,
+      },
       body: JSON.stringify({
         receiptId: receiptIdMajor,
         dispatchId,
@@ -241,7 +249,11 @@ async function runReceiptTests() {
     console.log(`Step 7: Confirming receipt with CRITICAL discrepancy — ${receiptIdCrit}...`);
     const resRcpCrit = await fetch(`${base}/api/v1/receipts`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-role': 'operator' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-role': 'operator',
+        'x-shop-id': shopId,
+      },
       body: JSON.stringify({
         receiptId: receiptIdCrit,
         dispatchId: dispatchIdCrit,

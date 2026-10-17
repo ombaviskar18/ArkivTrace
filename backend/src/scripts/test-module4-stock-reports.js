@@ -10,8 +10,10 @@ async function readJson(response) {
   return text ? JSON.parse(text) : null;
 }
 
+const runId = Math.floor(1000 + Math.random() * 9000);
+
 async function createShop(baseUrl, suffix) {
-  const shopId = `FPS-STOCK-${suffix}`;
+  const shopId = `FPS-STK-${suffix}-${runId}`.slice(0, 32);
   const response = await fetch(`${baseUrl}/api/v1/shops`, {
     method: 'POST',
     headers: {
@@ -41,7 +43,7 @@ async function createShop(baseUrl, suffix) {
 }
 
 async function createDispatch(baseUrl, shopId, suffix, grainType, dispatchedQuantityKg) {
-  const dispatchId = `DISP-STOCK-${suffix}`;
+  const dispatchId = `DISP-STK-${suffix}-${runId}`.slice(0, 32);
   const response = await fetch(`${baseUrl}/api/v1/dispatches`, {
     method: 'POST',
     headers: {
@@ -71,12 +73,13 @@ async function createDispatch(baseUrl, shopId, suffix, grainType, dispatchedQuan
 }
 
 async function createReceipt(baseUrl, shopId, dispatchId, suffix, receivedQuantityKg) {
-  const receiptId = `RCP-STOCK-${suffix}`;
+  const receiptId = `RCP-STK-${suffix}-${runId}`.slice(0, 32);
   const response = await fetch(`${baseUrl}/api/v1/receipts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-role': 'operator',
+      'x-shop-id': shopId,
     },
     body: JSON.stringify({
       receiptId,
@@ -134,8 +137,8 @@ async function run() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reportId: 'X' }),
     });
-    if (blocked.status !== 403) {
-      throw new Error(`Expected 403 for unauthenticated stock report, got ${blocked.status}`);
+    if (blocked.status !== 401 && blocked.status !== 403) {
+      throw new Error(`Expected 401 or 403 for unauthenticated stock report, got ${blocked.status}`);
     }
 
     const badValidation = await submitStockReport(baseUrl, {

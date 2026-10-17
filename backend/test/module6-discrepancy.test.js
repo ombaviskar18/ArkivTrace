@@ -106,12 +106,19 @@ test('Module 6 public reports are rate-limited and validate payloads', async () 
 test('Module 6 review endpoint requires admin role', async () => {
   const server = await listen(app);
 
-  const denied = await requestJson(server, '/api/v1/discrepancies/DISC-1/review', {
+  const unauth = await requestJson(server, '/api/v1/discrepancies/DISC-1/review', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ decision: 'resolved' }),
   });
-  assert.equal(denied.response.status, 403);
+  assert.equal(unauth.response.status, 401);
+
+  const forbidden = await requestJson(server, '/api/v1/discrepancies/DISC-1/review', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-role': 'operator' },
+    body: JSON.stringify({ decision: 'resolved' }),
+  });
+  assert.equal(forbidden.response.status, 403);
 
   await withStub(discrepancyService, 'reviewDiscrepancy', async () => ({
     duplicate: false,

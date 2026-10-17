@@ -41,9 +41,9 @@ async function runV1Tests() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ shopId: 'FPS-TEST-001' }),
     });
-    console.log(`   POST /api/v1/shops (No role) -> Status: ${resUnauthorizedShop.status} (Expected 403)`);
-    if (resUnauthorizedShop.status !== 403) {
-      throw new Error(`Expected 403 Forbidden, got ${resUnauthorizedShop.status}`);
+    console.log(`   POST /api/v1/shops (No role) -> Status: ${resUnauthorizedShop.status} (Expected 401)`);
+    if (resUnauthorizedShop.status !== 401 && resUnauthorizedShop.status !== 403) {
+      throw new Error(`Expected 401 or 403, got ${resUnauthorizedShop.status}`);
     }
 
     // 1b. POST /api/v1/dispatches with operator role
