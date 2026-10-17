@@ -2,8 +2,11 @@
 
 import React, { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, Plus, Menu, ShieldAlert, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { Search, Plus, Menu, ShieldCheck, Store, LogIn, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { UserButton } from '@clerk/nextjs';
+import { useUserRole } from '@/lib/auth';
 
 interface TopbarProps {
   onOpenMobileMenu: () => void;
@@ -17,6 +20,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   const pathname = usePathname();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const { isSignedIn, role, shopId, isAdmin, isOperator } = useUserRole();
 
   const getPageInfo = () => {
     if (pathname === '/') return { title: 'Supply Chain Overview', section: 'Overview' };
@@ -29,6 +33,7 @@ export const Topbar: React.FC<TopbarProps> = ({
     if (pathname.startsWith('/evidence')) return { title: 'Arkiv Evidence Explorer', section: 'Investigation' };
     if (pathname.startsWith('/network')) return { title: 'Network & Tiramisu Status', section: 'System' };
     if (pathname.startsWith('/settings')) return { title: 'Preferences & System Settings', section: 'System' };
+    if (pathname.startsWith('/unauthorized')) return { title: 'Access Control Violation', section: 'Security' };
     return { title: 'ArkivTrace', section: 'Portal' };
   };
 
@@ -80,21 +85,64 @@ export const Topbar: React.FC<TopbarProps> = ({
 
       {/* Right Actions */}
       <div className="flex items-center gap-2.5 sm:gap-3">
-        {/* Environment Badge */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#087DEB]/15 border border-[#00C8FF]/30 text-[11px] font-semibold text-[#55E5FF]">
-          <Sparkles className="w-3 h-3 text-[#00C8FF]" />
-          <span>Tiramisu Demo</span>
-        </div>
+        {!isSignedIn ? (
+          <>
+            <Link href="/sign-in">
+              <Button variant="secondary" size="sm" icon={<LogIn className="w-3.5 h-3.5" />}>
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/sign-up" className="hidden sm:inline-flex">
+              <Button variant="primary" size="sm">
+                Register
+              </Button>
+            </Link>
+          </>
+        ) : (
+          <>
+            {isAdmin && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#00C8FF]/15 border border-[#00C8FF]/40 text-[10px] font-bold text-[#55E5FF] font-mono tracking-wider shadow-[0_0_10px_rgba(0,200,255,0.2)]">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#00C8FF]" />
+                <span>OFFICER [ADMIN]</span>
+              </div>
+            )}
 
-        {/* Quick Submit Record Button */}
-        <Button
-          onClick={onOpenSubmitModal}
-          size="sm"
-          variant="primary"
-          icon={<Plus className="w-4 h-4" />}
-        >
-          <span className="hidden sm:inline">Submit</span> Record
-        </Button>
+            {isOperator && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#087DEB]/15 border border-[#087DEB]/40 text-[10px] font-bold text-[#38BDF8] font-mono tracking-wider">
+                <Store className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <span>DEALER [{shopId || 'UNASSIGNED'}]</span>
+              </div>
+            )}
+
+            {!isAdmin && !isOperator && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1E293B] border border-[#334155] text-[10px] font-bold text-[#91A9B7] font-mono tracking-wider">
+                <span>CITIZEN</span>
+              </div>
+            )}
+
+            {/* Quick Submit Record Button */}
+            <Button
+              onClick={onOpenSubmitModal}
+              size="sm"
+              variant="primary"
+              icon={<Plus className="w-4 h-4" />}
+            >
+              <span className="hidden sm:inline">Submit</span> Record
+            </Button>
+
+            {/* Clerk User Button Profile */}
+            <div className="p-0.5 rounded-full border border-[#00C8FF]/30 hover:border-[#00C8FF] transition-all flex items-center justify-center">
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-7 h-7 sm:w-8 sm:h-8',
+                    userButtonPopoverCard: 'bg-[#06151D] border border-[#00C8FF]/20 text-[#F1F8FC]',
+                  },
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </header>
   );

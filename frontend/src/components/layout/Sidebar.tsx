@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -15,6 +13,7 @@ import {
   ChevronRight,
   Database,
 } from 'lucide-react';
+import { useUserRole } from '@/lib/auth';
 
 interface SidebarProps {
   onCloseMobile?: () => void;
@@ -22,8 +21,9 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
   const pathname = usePathname();
+  const { role, isAdmin } = useUserRole();
 
-  const navGroups = [
+  const allNavGroups = [
     {
       label: 'OVERVIEW',
       items: [
@@ -31,6 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           name: 'Dashboard',
           href: '/',
           icon: <LayoutDashboard className="w-4 h-4" />,
+          roles: ['admin', 'operator'],
         },
       ],
     },
@@ -41,16 +42,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           name: 'Dispatches',
           href: '/dispatches',
           icon: <Truck className="w-4 h-4" />,
+          roles: ['admin', 'operator'],
         },
         {
           name: 'Shop Receipts',
           href: '/shops',
           icon: <PackageCheck className="w-4 h-4" />,
+          roles: ['admin', 'operator'],
         },
         {
           name: 'Stock Reports',
           href: '/stock-reports',
           icon: <Warehouse className="w-4 h-4" />,
+          roles: ['admin', 'operator'],
         },
       ],
     },
@@ -61,11 +65,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           name: 'Discrepancies',
           href: '/discrepancies',
           icon: <AlertTriangle className="w-4 h-4" />,
+          roles: ['admin', 'operator', 'public'],
         },
         {
           name: 'Evidence Explorer',
           href: '/evidence',
           icon: <ShieldCheck className="w-4 h-4" />,
+          roles: ['admin', 'operator', 'public'],
         },
       ],
     },
@@ -76,15 +82,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           name: 'Network Status',
           href: '/network',
           icon: <Activity className="w-4 h-4" />,
+          roles: ['admin', 'operator', 'public'],
         },
         {
           name: 'Settings',
           href: '/settings',
           icon: <Settings className="w-4 h-4" />,
+          roles: ['admin', 'operator'],
         },
       ],
     },
   ];
+
+  const navGroups = allNavGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        isAdmin ? true : item.roles.includes(role)
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <aside className="w-64 shrink-0 bg-[#041017] border-r border-[#00C8FF]/15 flex flex-col h-screen sticky top-0 select-none z-30">
@@ -187,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
         ))}
       </div>
 
-      {/* Bottom Network Status Widget */}
+      {/* Bottom Network & Role Status Widget */}
       <div className="p-3 border-t border-[#00C8FF]/15 bg-[#02090D]/50">
         <div className="p-3 rounded-xl bg-[#071B25] border border-[#00C8FF]/20 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -201,7 +218,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               </div>
               <div className="text-[10px] text-[#55E5FF] font-medium flex items-center gap-1">
                 <Database className="w-2.5 h-2.5" />
-                Connected (Demo Mode)
+                <span className="uppercase font-mono text-[9px]">
+                  {role === 'admin' ? 'Officer [Admin]' : role === 'operator' ? 'Dealer [Operator]' : 'Public Observer'}
+                </span>
               </div>
             </div>
           </div>
@@ -209,7 +228,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             href="/network"
             className="text-[10px] text-[#00C8FF] hover:underline font-mono"
           >
-            #8291
+            #7738577
           </Link>
         </div>
       </div>

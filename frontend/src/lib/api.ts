@@ -33,10 +33,31 @@ export const IS_DEMO_MODE =
   process.env.NEXT_PUBLIC_DEMO_MODE === 'true' ||
   process.env.NEXT_PUBLIC_USE_MOCK_CLIENT === 'true';
 
-const API_HEADERS: HeadersInit = {
-  'Content-Type': 'application/json',
-  'x-role': 'admin',
-};
+let authTokenGetter: (() => Promise<string | null>) | null = null;
+
+export function setAuthTokenGetter(getter: () => Promise<string | null>) {
+  authTokenGetter = getter;
+}
+
+export async function getAuthHeaders(extraHeaders: HeadersInit = {}): Promise<HeadersInit> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(extraHeaders as Record<string, string>),
+  };
+
+  if (authTokenGetter) {
+    try {
+      const token = await authTokenGetter();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    } catch (err) {
+      console.warn('Failed to resolve Clerk auth token:', err);
+    }
+  }
+
+  return headers;
+}
 
 // ---------------------------------------------------------------------------
 // Adapters: Map Backend Arkiv Entities to Strongly-Typed Frontend Models
@@ -223,9 +244,10 @@ function mapTimelineItemToArkivRecord(item: any): ArkivRecord {
 }
 
 function mapRawEntityToArkivRecord(entity: any): ArkivRecord {
-  const p = entity.payload || {};
+  if (!entity) return null as any;
+  const p = entity.payload || entity;
   const attrs = entity.attributes || {};
-  const rawType = String(attrs.type || p.entityType || 'dispatch').toLowerCase();
+  const rawType = String(attrs.type || p.entityType || p.recordType || 'dispatch').toLowerCase();
 
   const typeMap: Record<string, RecordType> = {
     dispatch: 'depot_dispatch',
@@ -239,18 +261,18 @@ function mapRawEntityToArkivRecord(entity: any): ArkivRecord {
 
   const recordType = typeMap[rawType] || 'depot_dispatch';
   const businessIdentifier =
-    p.dispatchId || p.receiptId || p.reportId || p.discrepancyId || p.shopId || entity.key.slice(0, 12);
+    p.dispatchId || p.receiptId || p.reportId || p.discrepancyId || p.shopId || p.recordId || entity.key?.slice(0, 12) || 'RECORD';
 
   return {
-    key: entity.key,
+    key: entity.key || p.entityKey || p.key || businessIdentifier,
     recordType,
     businessIdentifier,
-    timestamp: p.createdAt || p.dispatchDate || p.receivedDate || new Date().toISOString(),
-    quantityKg: p.dispatchedQuantityKg || p.receivedQuantityKg || p.closingStockKg || undefined,
+    timestamp: p.createdAt || p.dispatchDate || p.receivedDate || p.timestamp || new Date().toISOString(),
+    quantityKg: p.dispatchedQuantityKg || p.receivedQuantityKg || p.closingStockKg || p.quantityKg || undefined,
     commodity: normalizeCommodity(p.grainType),
     district: p.district || 'Maharashtra',
-    entityKey: entity.key,
-    txHash: entity.txHash || entity.key,
+    entityKey: entity.key || p.entityKey || p.key || businessIdentifier,
+    txHash: entity.txHash || p.txHash || entity.key || '',
     network: 'tiramisu',
     verificationStatus: 'Verified',
     payload: p,
@@ -475,12 +497,26 @@ class LocalDataStore {
   }
 
   getRecordByKey(key: string): ArkivRecord | undefined {
-    return this.records.find(
-      (r) =>
-        r.key.toLowerCase() === key.toLowerCase() ||
-        r.businessIdentifier.toLowerCase() === key.toLowerCase() ||
-        r.entityKey.toLowerCase() === key.toLowerCase()
-    );
+    if (!key) return undefined;
+    const clean = (s: string) => s.toLowerCase().replace(/^arkiv:[^:]+:entity:/i, '').replace(/^arkiv:entity:/i, '').trim();
+    const target = clean(key);
+    const lowerKey = key.toLowerCase();
+
+    return this.records.find((r) => {
+      if (!r) return false;
+      const rKey = (r.key || '').toLowerCase();
+      const rBiz = (r.businessIdentifier || '').toLowerCase();
+      const rEnt = (r.entityKey || '').toLowerCase();
+
+      return (
+        rKey === lowerKey ||
+        rBiz === lowerKey ||
+        rEnt === lowerKey ||
+        clean(rKey) === target ||
+        clean(rBiz) === target ||
+        clean(rEnt) === target
+      );
+    });
   }
 
   getRecords(): ArkivRecord[] {
@@ -669,11 +705,20 @@ export const api = {
       remarks: input.sealNumber ? `Seal: ${input.sealNumber}` : '',
     };
 
+    const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/dispatches`, {
       method: 'POST',
-      headers: API_HEADERS,
+      headers,
       body: JSON.stringify(payload),
     });
+
+    if (res.status === 401) {
+      throw new Error('Authentication required (401). Please sign in as an authorized Depot Officer to create dispatches.');
+    }
+    if (res.status === 403) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || 'Access Denied (403): Only Admin (Civil Supplies Depot Officer) can create dispatches.');
+    }
 
     if (!res.ok) {
       const errJson = await res.json().catch(() => null);
@@ -748,11 +793,20 @@ export const api = {
       remarks: `Condition: ${input.conditionStatus}`,
     };
 
+    const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/receipts`, {
       method: 'POST',
-      headers: API_HEADERS,
+      headers,
       body: JSON.stringify(payload),
     });
+
+    if (res.status === 401) {
+      throw new Error('Authentication required (401). Please sign in to confirm receipts.');
+    }
+    if (res.status === 403) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || 'Access Denied (403): You do not have permission or are not assigned to this Fair Price Shop.');
+    }
 
     if (!res.ok) {
       const errJson = await res.json().catch(() => null);
@@ -838,11 +892,20 @@ export const api = {
       remarks: 'Submitted via ArkivTrace Web Interface',
     };
 
+    const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/stock-reports`, {
       method: 'POST',
-      headers: API_HEADERS,
+      headers,
       body: JSON.stringify(payload),
     });
+
+    if (res.status === 401) {
+      throw new Error('Authentication required (401). Please sign in to declare stock reports.');
+    }
+    if (res.status === 403) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || 'Access Denied (403): You do not have permission or are not assigned to this Fair Price Shop.');
+    }
 
     if (!res.ok) {
       const errJson = await res.json().catch(() => null);
@@ -923,11 +986,16 @@ export const api = {
       reporterContact: 'auditor@arkivtrace.org',
     };
 
+    const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/discrepancies`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     });
+
+    if (res.status === 401) {
+      throw new Error('Authentication required (401). Please sign in to submit discrepancy reports.');
+    }
 
     if (!res.ok) {
       const errJson = await res.json().catch(() => null);
@@ -986,17 +1054,33 @@ export const api = {
    * GET /api/v1/records/:key
    */
   async getRecordByKey(key: string): Promise<ArkivRecord | null> {
+    if (!key) return null;
+
     if (IS_DEMO_MODE) {
       await new Promise((r) => setTimeout(r, 60));
       return localStore.getRecordByKey(key) || null;
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/records/${encodeURIComponent(key)}`);
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      const json = await res.json();
-      return mapRawEntityToArkivRecord(json.data);
+      const cleanKey = key.trim().replace(/^arkiv:[^:]+:entity:/i, '').replace(/^arkiv:entity:/i, '');
+      const candidates = Array.from(new Set([key.trim(), cleanKey].filter(Boolean)));
+
+      for (const cand of candidates) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/records/${encodeURIComponent(cand)}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.data) {
+              return mapRawEntityToArkivRecord(json.data);
+            }
+          }
+        } catch {
+          // If candidate request fails, try next
+        }
+      }
+
+      // If not found in live blockchain backend, fallback to local store (handles demo/seed records)
+      return localStore.getRecordByKey(key) || localStore.getRecordByKey(cleanKey) || null;
     } catch (err) {
       console.warn(`Failed to fetch live record for key ${key}, using fallback:`, err);
       return localStore.getRecordByKey(key) || null;

@@ -1,10 +1,9 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { CreateReceiptInput } from '@/types/api';
 import { api } from '@/lib/api';
-import { PackageCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { PackageCheck, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
+import { useUserRole } from '@/lib/auth';
 
 interface ReceiptFormProps {
   initialDeliveryId?: string;
@@ -19,9 +18,11 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
   onSuccess,
   onCancel,
 }) => {
+  const { isOperator, shopId: operatorShopId } = useUserRole();
+
   const [formData, setFormData] = useState<CreateReceiptInput>({
     deliveryId: initialDeliveryId,
-    shopId: initialShopId,
+    shopId: isOperator && operatorShopId ? operatorShopId : initialShopId,
     district: 'Thane Rural',
     reportingPeriod: 'October 2026',
     commodity: 'Wheat',
@@ -29,6 +30,12 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
     receivedTimestamp: new Date().toISOString().slice(0, 16),
     conditionStatus: 'Good',
   });
+
+  useEffect(() => {
+    if (isOperator && operatorShopId) {
+      setFormData((prev) => ({ ...prev, shopId: operatorShopId }));
+    }
+  }, [isOperator, operatorShopId]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,14 +116,26 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-[#91A9B7] mb-1">
-            Fair Price Shop ID *
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-xs font-semibold text-[#91A9B7]">
+              Fair Price Shop ID *
+            </label>
+            {isOperator && operatorShopId && (
+              <span className="flex items-center gap-1 text-[10px] text-[#00C8FF] font-mono">
+                <Lock className="w-2.5 h-2.5" /> Authenticated Assignment
+              </span>
+            )}
+          </div>
           <input
             type="text"
             value={formData.shopId}
             onChange={(e) => setFormData({ ...formData, shopId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            disabled={isOperator && Boolean(operatorShopId)}
+            className={`w-full px-3 py-2 text-xs bg-[#06151D] border rounded-lg text-[#F1F8FC] focus:outline-none ${
+              isOperator && operatorShopId
+                ? 'border-[#00C8FF]/40 bg-[#071B25]/60 cursor-not-allowed text-[#55E5FF] font-mono'
+                : 'border-[#00C8FF]/20 focus:border-[#00C8FF]'
+            }`}
             placeholder="e.g. FPS-2041"
             required
           />

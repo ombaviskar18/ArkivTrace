@@ -12,6 +12,8 @@ import { RecentActivityTable } from '@/components/dashboard/RecentActivityTable'
 import { RecentDiscrepancies } from '@/components/dashboard/RecentDiscrepancies';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { api } from '@/lib/api';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { useUserRole } from '@/lib/auth';
 import {
   DashboardSummary,
   DepotDispatch,
@@ -31,9 +33,11 @@ import {
   Layers,
   Sparkles,
   RefreshCw,
+  Store,
 } from 'lucide-react';
 
 export default function DashboardPage() {
+  const { role, shopId, isAdmin, isOperator } = useUserRole();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [dispatches, setDispatches] = useState<DepotDispatch[]>([]);
   const [receipts, setReceipts] = useState<ShopReceipt[]>([]);
@@ -70,8 +74,38 @@ export default function DashboardPage() {
     loadData();
   };
 
+  const visibleDispatches = isOperator && shopId
+    ? dispatches.filter((d) => d.destinationShopId.toUpperCase() === shopId.toUpperCase())
+    : dispatches;
+
+  const visibleReceipts = isOperator && shopId
+    ? receipts.filter((r) => r.shopId.toUpperCase() === shopId.toUpperCase())
+    : receipts;
+
+  const visibleDiscrepancies = isOperator && shopId
+    ? discrepancies.filter((d) => d.shopId && d.shopId.toUpperCase() === shopId.toUpperCase())
+    : discrepancies;
+
   return (
     <AppShell onRefresh={loadData}>
+      <RoleGuard allowedRoles={['admin', 'operator']}>
+        {isOperator && (
+          <div className="p-3.5 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs shadow-[0_0_15px_rgba(0,200,255,0.1)]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#00C8FF]/15 border border-[#00C8FF]/30 flex items-center justify-center text-[#00C8FF]">
+                <Store className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[#F1F8FC] font-semibold">Dealer Operator View: </span>
+                <span className="text-[#91A9B7]">Scoped to Fair Price Shop </span>
+                <strong className="text-[#55E5FF] font-mono uppercase font-bold">{shopId || 'ASSIGNED-SHOP'}</strong>
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+              Shop Scope Active
+            </span>
+          </div>
+        )}
       {/* Network & Verification Status Banner */}
       <div className="p-4 rounded-xl glass-panel-elevated border border-[#00C8FF]/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-full bg-gradient-to-l from-[#00C8FF]/10 to-transparent pointer-events-none" />
@@ -255,7 +289,7 @@ export default function DashboardPage() {
               </Link>
             }
           >
-            <RecentActivityTable dispatches={dispatches} receipts={receipts} />
+            <RecentActivityTable dispatches={visibleDispatches} receipts={visibleReceipts} />
           </Card>
         </div>
 
@@ -266,11 +300,11 @@ export default function DashboardPage() {
             subtitle="Unresolved quantity variances requiring inspection"
             headerAction={
               <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FB7185]/20 text-[#FB7185] border border-[#FB7185]/30">
-                {discrepancies.length} Active
+                {visibleDiscrepancies.length} Active
               </span>
             }
           >
-            <RecentDiscrepancies discrepancies={discrepancies} />
+            <RecentDiscrepancies discrepancies={visibleDiscrepancies} />
           </Card>
         </div>
       </div>
@@ -339,6 +373,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      </RoleGuard>
     </AppShell>
   );
 }

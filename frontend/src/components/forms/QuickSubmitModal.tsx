@@ -1,12 +1,11 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { DispatchForm } from './DispatchForm';
 import { ReceiptForm } from './ReceiptForm';
 import { StockReportForm } from './StockReportForm';
 import { DiscrepancyForm } from './DiscrepancyForm';
-import { Truck, PackageCheck, Warehouse, AlertTriangle } from 'lucide-react';
+import { Truck, PackageCheck, Warehouse, AlertTriangle, Lock } from 'lucide-react';
+import { useUserRole } from '@/lib/auth';
 
 interface QuickSubmitModalProps {
   isOpen: boolean;
@@ -19,32 +18,46 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { role, isAdmin, isOperator, shopId } = useUserRole();
+
   const [activeTab, setActiveTab] = useState<'dispatch' | 'receipt' | 'stock' | 'discrepancy'>(
-    'dispatch'
+    isAdmin ? 'dispatch' : isOperator ? 'receipt' : 'discrepancy'
   );
 
-  const tabs = [
+  useEffect(() => {
+    if (isAdmin) setActiveTab('dispatch');
+    else if (isOperator) setActiveTab('receipt');
+    else setActiveTab('discrepancy');
+  }, [isAdmin, isOperator, isOpen]);
+
+  const allTabs = [
     {
       id: 'dispatch',
       label: 'Depot Dispatch',
       icon: <Truck className="w-3.5 h-3.5" />,
+      allowedRoles: ['admin'],
     },
     {
       id: 'receipt',
       label: 'Shop Receipt',
       icon: <PackageCheck className="w-3.5 h-3.5" />,
+      allowedRoles: ['admin', 'operator'],
     },
     {
       id: 'stock',
       label: 'Stock Report',
       icon: <Warehouse className="w-3.5 h-3.5" />,
+      allowedRoles: ['admin', 'operator'],
     },
     {
       id: 'discrepancy',
       label: 'Discrepancy',
       icon: <AlertTriangle className="w-3.5 h-3.5" />,
+      allowedRoles: ['admin', 'operator', 'public'],
     },
   ];
+
+  const tabs = allTabs.filter((t) => t.allowedRoles.includes(role));
 
   const handleSuccess = () => {
     if (onSuccess) onSuccess();
@@ -56,7 +69,13 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Submit Supply-Chain Record"
-      subtitle="Anchor auditable grain movement or report variance on the Arkiv testnet"
+      subtitle={
+        isOperator && shopId
+          ? `Authenticated Dealer for Shop [${shopId}] • Verified On-Chain Submission`
+          : isAdmin
+          ? 'Civil Supplies Depot Officer • Cryptographic Dispatch & Declaration Authority'
+          : 'Public Whistleblower Portal • Anchor Auditable Discrepancy'
+      }
       maxWidth="2xl"
     >
       {/* Tab Selector */}

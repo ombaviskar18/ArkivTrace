@@ -12,6 +12,8 @@ import { StockReportForm } from '@/components/forms/StockReportForm';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { useUserRole } from '@/lib/auth';
 import { StockReport } from '@/types/api';
 import { formatSimpleKg, formatDate, shortenIdentifier } from '@/lib/formatters';
 import {
@@ -23,9 +25,11 @@ import {
   RefreshCw,
   Calculator,
   HelpCircle,
+  Store,
 } from 'lucide-react';
 
 export default function StockReportsPage() {
+  const { role, shopId, isAdmin, isOperator } = useUserRole();
   const [reports, setReports] = useState<StockReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -53,32 +57,52 @@ export default function StockReportsPage() {
     loadData();
   }, [search, districtFilter, periodFilter]);
 
+  const visibleReports = isOperator && shopId
+    ? reports.filter((r) => r.shopId.toUpperCase() === shopId.toUpperCase())
+    : reports;
+
   return (
     <AppShell onRefresh={loadData}>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-              Inventory & <span className="text-[#00C8FF]">Stock Reports</span>
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30">
-              {reports.length} Declarations
+      <RoleGuard allowedRoles={['admin', 'operator']}>
+        {/* Operator scope notification banner */}
+        {isOperator && (
+          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <span className="text-[#F1F8FC]">
+                Dealer Scoped: Displaying monthly stock declarations for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+              </span>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+              Shop Scope
             </span>
           </div>
-          <p className="text-xs text-[#91A9B7] mt-1">
-            Compare reported shop closing stock against expected balance calculated as Opening + Receipts − Quota Distributed.
-          </p>
-        </div>
+        )}
 
-        <Button
-          variant="primary"
-          onClick={() => setIsModalOpen(true)}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Submit Stock Report
-        </Button>
-      </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
+                Inventory & <span className="text-[#00C8FF]">Stock Reports</span>
+              </h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30">
+                {visibleReports.length} Declarations
+              </span>
+            </div>
+            <p className="text-xs text-[#91A9B7] mt-1">
+              Compare reported shop closing stock against expected balance calculated as Opening + Receipts − Quota Distributed.
+            </p>
+          </div>
+
+          <Button
+            variant="primary"
+            onClick={() => setIsModalOpen(true)}
+            icon={<Plus className="w-4 h-4" />}
+          >
+            Submit Stock Report
+          </Button>
+        </div>
 
       {/* Reconciliation Formula Banner */}
       <div className="p-4 rounded-xl glass-panel border border-[#00C8FF]/20 flex items-start gap-3 text-xs text-[#91A9B7]">
@@ -156,7 +180,7 @@ export default function StockReportsPage() {
       <Card>
         {loading ? (
           <LoadingSkeleton rows={5} />
-        ) : reports.length === 0 ? (
+        ) : visibleReports.length === 0 ? (
           <EmptyState
             title="No Stock Declarations Found"
             description="No inventory declarations match your active filter. Submit a monthly distribution declaration to begin."
@@ -183,7 +207,7 @@ export default function StockReportsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#00C8FF]/10">
-                {reports.map((report) => (
+                {visibleReports.map((report) => (
                   <tr
                     key={report.id}
                     className="hover:bg-[#071B25]/80 transition-colors group"
@@ -280,6 +304,7 @@ export default function StockReportsPage() {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+      </RoleGuard>
     </AppShell>
   );
 }

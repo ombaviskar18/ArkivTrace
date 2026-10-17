@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@arkiv-network/sdk": "^0.8.1",
+    "@clerk/nextjs": "^7.9.17",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
     "@types/three": "^0.181.0",

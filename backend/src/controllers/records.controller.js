@@ -38,10 +38,21 @@ export const recordsController = {
         return res.status(400).json({ success: false, error: 'Key is required' });
       }
 
+      const cleanKey = key
+        .trim()
+        .replace(/^arkiv:[^:]+:entity:/i, '')
+        .replace(/^arkiv:entity:/i, '');
+
       // 1. Direct Arkiv 32-byte hex entity lookup
-      if (/^0x[0-9a-fA-F]{64}$/.test(key)) {
+      const targetHash = /^0x[0-9a-fA-F]{64}$/.test(cleanKey)
+        ? cleanKey
+        : /^0x[0-9a-fA-F]{64}$/.test(key)
+        ? key
+        : null;
+
+      if (targetHash) {
         try {
-          const entity = await arkivService.getEntityByKey(key);
+          const entity = await arkivService.getEntityByKey(targetHash);
           if (entity) {
             return res.status(200).json({ success: true, data: entity });
           }
@@ -50,35 +61,39 @@ export const recordsController = {
         }
       }
 
-      // 2. Dispatch by dispatchId
-      try {
-        const dispatch = await dispatchService.getDispatchById(key);
-        if (dispatch) return res.status(200).json({ success: true, data: dispatch });
-      } catch {}
+      // Check both cleanKey and original key across domain services
+      const candidates = Array.from(new Set([cleanKey, key].filter(Boolean)));
+      for (const candidate of candidates) {
+        // 2. Dispatch by dispatchId
+        try {
+          const dispatch = await dispatchService.getDispatchById(candidate);
+          if (dispatch) return res.status(200).json({ success: true, data: dispatch });
+        } catch {}
 
-      // 3. Receipt by receiptId
-      try {
-        const receipt = await receiptService.getReceiptById(key);
-        if (receipt) return res.status(200).json({ success: true, data: receipt });
-      } catch {}
+        // 3. Receipt by receiptId
+        try {
+          const receipt = await receiptService.getReceiptById(candidate);
+          if (receipt) return res.status(200).json({ success: true, data: receipt });
+        } catch {}
 
-      // 4. Stock report by reportId
-      try {
-        const report = await stockReportService.getStockReportById(key);
-        if (report) return res.status(200).json({ success: true, data: report });
-      } catch {}
+        // 4. Stock report by reportId
+        try {
+          const report = await stockReportService.getStockReportById(candidate);
+          if (report) return res.status(200).json({ success: true, data: report });
+        } catch {}
 
-      // 5. Discrepancy by discrepancyId
-      try {
-        const discrepancy = await discrepancyService.getDiscrepancyById(key);
-        if (discrepancy) return res.status(200).json({ success: true, data: discrepancy });
-      } catch {}
+        // 5. Discrepancy by discrepancyId
+        try {
+          const discrepancy = await discrepancyService.getDiscrepancyById(candidate);
+          if (discrepancy) return res.status(200).json({ success: true, data: discrepancy });
+        } catch {}
 
-      // 6. Shop by shopId
-      try {
-        const shop = await shopService.getShopById(key);
-        if (shop) return res.status(200).json({ success: true, data: shop });
-      } catch {}
+        // 6. Shop by shopId
+        try {
+          const shop = await shopService.getShopById(candidate);
+          if (shop) return res.status(200).json({ success: true, data: shop });
+        } catch {}
+      }
 
       return res.status(404).json({
         success: false,

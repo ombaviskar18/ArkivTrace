@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
 import { ShopTimelineEvent } from '@/types/api';
 import { formatDate, formatSimpleKg, shortenIdentifier } from '@/lib/formatters';
+import { RoleGuard } from '@/components/auth/RoleGuard';
 import {
   History,
   ArrowLeft,
@@ -67,8 +68,9 @@ export default function ShopTimelinePage({ params }: PageProps) {
 
   return (
     <AppShell>
-      {/* Navigation & Header */}
-      <div className="space-y-4 pb-2">
+      <RoleGuard allowedRoles={['admin', 'operator']} requireShop targetShopId={shopId}>
+        {/* Navigation & Header */}
+        <div className="space-y-4 pb-2">
         <Link
           href="/shops"
           className="inline-flex items-center gap-1.5 text-xs text-[#91A9B7] hover:text-[#55E5FF] transition-colors"
@@ -197,6 +199,7 @@ export default function ShopTimelinePage({ params }: PageProps) {
           </div>
         )}
       </Card>
+      </RoleGuard>
     </AppShell>
   );
 }

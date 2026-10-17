@@ -1,10 +1,9 @@
-'use client';
-
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { CreateDispatchInput } from '@/types/api';
 import { api } from '@/lib/api';
-import { Truck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Truck, CheckCircle2, AlertCircle, ShieldAlert } from 'lucide-react';
+import { useUserRole } from '@/lib/auth';
 
 interface DispatchFormProps {
   onSuccess?: () => void;
@@ -12,6 +11,7 @@ interface DispatchFormProps {
 }
 
 export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel }) => {
+  const { role, isAdmin } = useUserRole();
   const [formData, setFormData] = useState<CreateDispatchInput>({
     deliveryId: `DEL-2026-${Math.floor(1000 + Math.random() * 9000)}`,
     depotId: 'DEP-FCI-04',
@@ -84,6 +84,16 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {!isAdmin && (
+        <div className="p-3 rounded-lg bg-[#FB7185]/15 border border-[#FB7185]/30 text-xs text-[#FB7185] flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 shrink-0" />
+          <span>
+            Civil Supplies Officer credentials required. You are currently authenticated as{' '}
+            <strong className="uppercase font-mono text-[#F1F8FC]">{role}</strong>. Creating grain dispatches is restricted to Admins.
+          </span>
+        </div>
+      )}
+
       {error && (
         <div className="p-3 rounded-lg bg-[#FB7185]/15 border border-[#FB7185]/30 text-xs text-[#FB7185] flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
@@ -225,9 +235,10 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
           type="submit"
           variant="primary"
           isLoading={isLoading}
+          disabled={!isAdmin || isLoading}
           icon={<Truck className="w-4 h-4" />}
         >
-          Anchor Depot Dispatch
+          {isAdmin ? 'Anchor Depot Dispatch' : 'Officer Authorization Required'}
         </Button>
       </div>
     </form>

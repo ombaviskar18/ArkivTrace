@@ -11,6 +11,8 @@ import { DiscrepancyForm } from '@/components/forms/DiscrepancyForm';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { useUserRole } from '@/lib/auth';
 import { Discrepancy } from '@/types/api';
 import { formatSimpleKg, formatDate, shortenIdentifier } from '@/lib/formatters';
 import {
@@ -25,9 +27,11 @@ import {
   Clock,
   ArrowRight,
   Scale,
+  Store,
 } from 'lucide-react';
 
 export default function DiscrepanciesPage() {
+  const { role, shopId, isAdmin, isOperator } = useUserRole();
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -56,13 +60,32 @@ export default function DiscrepanciesPage() {
     loadData();
   }, [search, categoryFilter, statusFilter]);
 
-  const totalCases = discrepancies.length;
-  const openCases = discrepancies.filter((d) => d.status === 'Open').length;
-  const underInvestigation = discrepancies.filter((d) => d.status === 'Under Investigation').length;
-  const resolvedCases = discrepancies.filter((d) => d.status === 'Resolved').length;
+  const visibleDiscrepancies = isOperator && shopId
+    ? discrepancies.filter((d) => !d.shopId || d.shopId.toUpperCase() === shopId.toUpperCase())
+    : discrepancies;
+
+  const totalCases = visibleDiscrepancies.length;
+  const openCases = visibleDiscrepancies.filter((d) => d.status === 'Open').length;
+  const underInvestigation = visibleDiscrepancies.filter((d) => d.status === 'Under Investigation').length;
+  const resolvedCases = visibleDiscrepancies.filter((d) => d.status === 'Resolved').length;
 
   return (
     <AppShell onRefresh={loadData}>
+      <RoleGuard allowedRoles={['admin', 'operator', 'public']}>
+        {/* Operator scope notification banner */}
+        {isOperator && (
+          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <span className="text-[#F1F8FC]">
+                Dealer Scoped: Displaying audit cases involving Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+              </span>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+              Shop Scope
+            </span>
+          </div>
+        )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
         <div>
@@ -187,7 +210,7 @@ export default function DiscrepanciesPage() {
       <Card>
         {loading ? (
           <LoadingSkeleton rows={5} />
-        ) : discrepancies.length === 0 ? (
+        ) : visibleDiscrepancies.length === 0 ? (
           <EmptyState
             title="No Discrepancies Logged"
             description="No active discrepancies match your criteria. All grain movements currently match recorded declarations."
@@ -211,7 +234,7 @@ export default function DiscrepanciesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#00C8FF]/10">
-                {discrepancies.map((disc) => (
+                {visibleDiscrepancies.map((disc) => (
                   <tr
                     key={disc.id}
                     className="hover:bg-[#071B25]/80 transition-colors group cursor-pointer"
@@ -406,6 +429,7 @@ export default function DiscrepanciesPage() {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+      </RoleGuard>
     </AppShell>
   );
 }

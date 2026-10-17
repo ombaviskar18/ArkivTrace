@@ -12,6 +12,8 @@ import { ReceiptForm } from '@/components/forms/ReceiptForm';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { useUserRole } from '@/lib/auth';
 import { ShopReceipt } from '@/types/api';
 import { formatSimpleKg, formatDate, shortenIdentifier } from '@/lib/formatters';
 import {
@@ -23,9 +25,11 @@ import {
   RefreshCw,
   ExternalLink,
   History,
+  Store,
 } from 'lucide-react';
 
 export default function ShopReceiptsPage() {
+  const { role, shopId, isAdmin, isOperator } = useUserRole();
   const [receipts, setReceipts] = useState<ShopReceipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -53,32 +57,52 @@ export default function ShopReceiptsPage() {
     loadData();
   }, [search, districtFilter, periodFilter]);
 
+  const visibleReceipts = isOperator && shopId
+    ? receipts.filter((r) => r.shopId.toUpperCase() === shopId.toUpperCase())
+    : receipts;
+
   return (
     <AppShell onRefresh={loadData}>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-              Shop <span className="text-[#00C8FF]">Receipts</span>
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#36D399]/15 text-[#36D399] border border-[#36D399]/30">
-              {receipts.length} Acknowledged Deliveries
+      <RoleGuard allowedRoles={['admin', 'operator']}>
+        {/* Operator scope notification banner */}
+        {isOperator && (
+          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <span className="text-[#F1F8FC]">
+                Dealer Scoped: Displaying receipts acknowledged for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+              </span>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+              Shop Scope
             </span>
           </div>
-          <p className="text-xs text-[#91A9B7] mt-1">
-            Inspect recorded deliveries received by fair-price shops and reconciled against depot dispatches.
-          </p>
-        </div>
+        )}
 
-        <Button
-          variant="primary"
-          onClick={() => setIsModalOpen(true)}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Acknowledge Receipt
-        </Button>
-      </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
+                Shop <span className="text-[#00C8FF]">Receipts</span>
+              </h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#36D399]/15 text-[#36D399] border border-[#36D399]/30">
+                {visibleReceipts.length} Acknowledged Deliveries
+              </span>
+            </div>
+            <p className="text-xs text-[#91A9B7] mt-1">
+              Inspect recorded deliveries received by fair-price shops and reconciled against depot dispatches.
+            </p>
+          </div>
+
+          <Button
+            variant="primary"
+            onClick={() => setIsModalOpen(true)}
+            icon={<Plus className="w-4 h-4" />}
+          >
+            Acknowledge Receipt
+          </Button>
+        </div>
 
       {/* Filter and Search Bar */}
       <Card>
@@ -135,7 +159,7 @@ export default function ShopReceiptsPage() {
       <Card>
         {loading ? (
           <LoadingSkeleton rows={5} />
-        ) : receipts.length === 0 ? (
+        ) : visibleReceipts.length === 0 ? (
           <EmptyState
             title="No Shop Receipts Found"
             description="No shop delivery receipts match your active query. Record a new shop arrival using the button above."
@@ -161,7 +185,7 @@ export default function ShopReceiptsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#00C8FF]/10">
-                {receipts.map((rcpt) => (
+                {visibleReceipts.map((rcpt) => (
                   <tr
                     key={rcpt.id}
                     className="hover:bg-[#071B25]/80 transition-colors group"
@@ -264,6 +288,7 @@ export default function ShopReceiptsPage() {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+      </RoleGuard>
     </AppShell>
   );
 }

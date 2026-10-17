@@ -12,6 +12,8 @@ import { DispatchForm } from '@/components/forms/DispatchForm';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { useUserRole } from '@/lib/auth';
 import { DepotDispatch } from '@/types/api';
 import { formatSimpleKg, formatDate, shortenIdentifier } from '@/lib/formatters';
 import {
@@ -22,9 +24,12 @@ import {
   ArrowUpRight,
   RefreshCw,
   ExternalLink,
+  Shield,
+  Store,
 } from 'lucide-react';
 
 export default function DispatchesPage() {
+  const { role, shopId, isAdmin, isOperator } = useUserRole();
   const [dispatches, setDispatches] = useState<DepotDispatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -52,32 +57,59 @@ export default function DispatchesPage() {
     loadData();
   }, [search, districtFilter, periodFilter]);
 
+  const visibleDispatches = isOperator && shopId
+    ? dispatches.filter((d) => d.destinationShopId.toUpperCase() === shopId.toUpperCase())
+    : dispatches;
+
   return (
     <AppShell onRefresh={loadData}>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-              Depot <span className="text-[#00C8FF]">Dispatches</span>
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30">
-              {dispatches.length} Consignments
+      <RoleGuard allowedRoles={['admin', 'operator']}>
+        {/* Operator scope notification banner */}
+        {isOperator && (
+          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <span className="text-[#F1F8FC]">
+                Dealer Filter: Displaying incoming consignments for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+              </span>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+              Operator View
             </span>
           </div>
-          <p className="text-xs text-[#91A9B7] mt-1">
-            Track grain consignments leaving FCI and state warehouses and follow their associated cryptographic proof.
-          </p>
-        </div>
+        )}
 
-        <Button
-          variant="primary"
-          onClick={() => setIsModalOpen(true)}
-          icon={<Plus className="w-4 h-4" />}
-        >
-          Create Dispatch
-        </Button>
-      </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
+                Depot <span className="text-[#00C8FF]">Dispatches</span>
+              </h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30">
+                {visibleDispatches.length} Consignments
+              </span>
+            </div>
+            <p className="text-xs text-[#91A9B7] mt-1">
+              Track grain consignments leaving FCI and state warehouses and follow their associated cryptographic proof.
+            </p>
+          </div>
+
+          {isAdmin ? (
+            <Button
+              variant="primary"
+              onClick={() => setIsModalOpen(true)}
+              icon={<Plus className="w-4 h-4" />}
+            >
+              Create Dispatch
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#06151D] border border-[#00C8FF]/20 text-xs text-[#91A9B7]">
+              <Shield className="w-3.5 h-3.5 text-[#00C8FF]" />
+              <span>Officer Authority Required for Outbound Dispatches</span>
+            </div>
+          )}
+        </div>
 
       {/* Filter and Search Bar */}
       <Card>
@@ -134,13 +166,13 @@ export default function DispatchesPage() {
       <Card>
         {loading ? (
           <LoadingSkeleton rows={5} />
-        ) : dispatches.length === 0 ? (
+        ) : visibleDispatches.length === 0 ? (
           <EmptyState
             title="No Depot Dispatches Found"
             description="No consignment records match your active search or district filters. Create a new dispatch record to populate this view."
             icon={<Truck className="w-8 h-8" />}
-            actionLabel="Create Dispatch"
-            onAction={() => setIsModalOpen(true)}
+            actionLabel={isAdmin ? "Create Dispatch" : undefined}
+            onAction={isAdmin ? () => setIsModalOpen(true) : undefined}
           />
         ) : (
           <div className="overflow-x-auto rounded-xl border border-[#00C8FF]/15">
@@ -160,7 +192,7 @@ export default function DispatchesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#00C8FF]/10">
-                {dispatches.map((disp) => (
+                {visibleDispatches.map((disp) => (
                   <tr
                     key={disp.id}
                     className="hover:bg-[#071B25]/80 transition-colors group"
@@ -249,6 +281,7 @@ export default function DispatchesPage() {
           onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
+      </RoleGuard>
     </AppShell>
   );
 }
