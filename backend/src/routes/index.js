@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import testRoutes from './testEntity.routes.js';
+import { testEntityController } from '../controllers/testEntity.controller.js';
 import shopRoutes from './shop.routes.js';
 import dispatchRoutes from './dispatch.routes.js';
 import receiptRoutes from './receipt.routes.js';
@@ -24,6 +25,7 @@ apiRouter.get('/ping', (req, res) => {
 apiRouter.use('/test', testRoutes);
 
 // ArkivTrace Core v1 Modules
+apiRouter.get('/v1/network/status', testEntityController.getHealth);
 apiRouter.use('/v1/shops', shopRoutes);
 apiRouter.use('/v1/dispatches', dispatchRoutes);
 apiRouter.use('/v1/receipts', receiptRoutes);

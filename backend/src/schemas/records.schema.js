@@ -13,3 +13,9 @@ export const recordsQuerySchema = z.object({
     limit: z.coerce.number().int().min(1).max(200).default(50),
   }),
 });
+
+export const getRecordByKeySchema = z.object({
+  params: z.object({
+    key: z.string().trim().min(1, 'Record key or identifier is required'),
+  }),
+});

@@ -1,14 +1,12 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 
-console.log('====================================================');
-console.log('      ArkivTrace — Wallet Generator');
-console.log('====================================================');
-
 const privateKey = generatePrivateKey();
 const account = privateKeyToAccount(privateKey);
 
-console.log('Generated New Wallet for Arkiv Tiramisu Testnet:');
-console.log(`\nAddress:     ${account.address}`);
+console.log('====================================================');
+console.log('      ArkivTrace — Wallet Generator');
+console.log('====================================================');
+console.log(`Address:     ${account.address}`);
 console.log(`Private Key: ${privateKey}\n`);
 console.log('Next Steps:');
 console.log('1. Copy the private key above and paste it into backend/.env:');

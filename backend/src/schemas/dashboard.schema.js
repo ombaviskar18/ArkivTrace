@@ -6,7 +6,7 @@ export const summaryQuerySchema = z.object({
   query: z.object({
     district: z.string().trim().optional(),
     period: z.string().trim().regex(PERIOD_REGEX, 'period must be in YYYY-MM format').optional(),
-    limit: z.coerce.number().int().min(1).max(50).default(10),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
   }),
 });
 

@@ -1,4 +1,30 @@
-import { getAuth } from '@clerk/express';
+import { getAuth, createClerkClient } from '@clerk/express';
+
+const clerkClient = process.env.CLERK_SECRET_KEY
+  ? createClerkClient({
+      secretKey: process.env.CLERK_SECRET_KEY,
+      publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+    })
+  : null;
+
+const userMetadataCache = new Map();
+
+async function getUserMetadata(userId) {
+  if (!userId || !clerkClient) return {};
+  const cached = userMetadataCache.get(userId);
+  if (cached && Date.now() - cached.timestamp < 60000) {
+    return cached.metadata;
+  }
+  try {
+    const user = await clerkClient.users.getUser(userId);
+    const metadata = user.publicMetadata || {};
+    userMetadataCache.set(userId, { metadata, timestamp: Date.now() });
+    return metadata;
+  } catch (err) {
+    console.warn(`Failed to fetch Clerk user metadata for ${userId}:`, err?.message || err);
+    return {};
+  }
+}
 
 /**
  * Normalizes a role string to lowercase and trimmed.
@@ -84,7 +110,7 @@ export const readClerkAssignedShopIds = (auth) => {
  *
  * @param {string[]} allowedRoles - List of allowed roles, e.g. ['admin'], ['admin', 'operator']
  */
-export const requireRole = (allowedRoles = []) => (req, res, next) => {
+export const requireRole = (allowedRoles = []) => async (req, res, next) => {
   let clerkAuth = null;
   try {
     clerkAuth = getAuth(req);
@@ -117,17 +143,30 @@ export const requireRole = (allowedRoles = []) => (req, res, next) => {
   let isAuthenticated = false;
   let assignedShopIds = [];
 
-  const isClerkAuthenticated = Boolean(clerkAuth && clerkAuth.userId);
+  const isClerkAuthenticated = Boolean(clerkAuth && (clerkAuth.userId || clerkAuth.isAuthenticated));
 
   if (isClerkAuthenticated) {
     isAuthenticated = true;
     authSource = 'clerk';
-    req.clerkUserId = clerkAuth.userId;
+    req.clerkUserId = clerkAuth.userId || null;
     req.clerkSessionId = clerkAuth.sessionId || null;
 
     // Strict: derive role and assigned shops ONLY from verified Clerk claims
-    role = readClerkRole(clerkAuth) || 'public';
+    role = readClerkRole(clerkAuth);
     assignedShopIds = readClerkAssignedShopIds(clerkAuth);
+
+    // If role or assignedShopIds is missing from claims, fetch verified user metadata from Clerk API
+    if (!role || assignedShopIds.length === 0) {
+      const metadata = await getUserMetadata(clerkAuth.userId);
+      if (!role) {
+        role = normalizedRole(metadata?.role);
+      }
+      if (assignedShopIds.length === 0 && metadata?.shopId) {
+        assignedShopIds = [String(metadata.shopId).trim().toUpperCase()];
+      }
+    }
+
+    role = role || 'public';
   } else if (demoHeadersEnabled) {
     // Only in development with explicit opt-in, accept demo headers for unauthenticated requests
     const headerRole = req.headers['x-role'] || req.headers['x-demo-role'];
@@ -151,6 +190,7 @@ export const requireRole = (allowedRoles = []) => (req, res, next) => {
   req.userRole = role || 'public';
   req.assignedShopIds = assignedShopIds;
   req.assignedShopId = assignedShopIds[0] || null;
+  req.clerkShopId = assignedShopIds[0] || null;
 
   if (allowedRoles.length > 0) {
     // 1. Missing or invalid authentication -> 401 Unauthorized
@@ -226,9 +266,29 @@ export const requireShopScope = (
     return res.status(403).json({
       success: false,
       error: 'Forbidden',
-      message: `Operator shop scope mismatch. You are not assigned to shop '${requestedShopId}'.`,
+      message: `Operator shop scope mismatch. Operator is scoped to shop '${assignedShopIds[0] || 'NONE'}', but requested action for '${requestedShopId}'. Cross-shop action blocked.`,
     });
   }
 
   next();
+};
+
+/**
+ * Authentication Gate Middleware
+ *
+ * Verifies that the incoming request is authenticated (either through Clerk or demo headers).
+ * Rejects unauthenticated requests with 401 Unauthorized.
+ */
+export const requireAuth = (req, res, next) => {
+  return requireRole()(req, res, (err) => {
+    if (err) return next(err);
+    if (!req.isAuthenticated) {
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized',
+        message: 'Authentication required. Please provide valid authentication credentials.',
+      });
+    }
+    next();
+  });
 };
