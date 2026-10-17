@@ -1151,6 +1151,36 @@ export const api = {
     }
   },
 
+  async getTelegramLinkCode(): Promise<{ code: string; expiresAt: string; instructions: string }> {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE_URL}/telegram/link-code`, {
+      method: 'POST',
+      headers,
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.success) {
+      throw new Error(json.message || 'Failed to generate Telegram link code');
+    }
+    return json.data;
+  },
+
+  async getTelegramStatus(): Promise<{
+    isLinked: boolean;
+    telegramChatId: string | null;
+    role: string;
+    assignedShopIds: string[];
+  }> {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE_URL}/telegram/status`, {
+      headers,
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.success) {
+      throw new Error(json.message || 'Failed to fetch Telegram link status');
+    }
+    return json.data;
+  },
+
   resetDemoData(): void {
     localStore.resetDemo();
   },

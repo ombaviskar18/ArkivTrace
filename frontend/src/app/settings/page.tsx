@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { TelegramLinkCard } from '@/components/settings/TelegramLinkCard';
 import { api } from '@/lib/api';
 import {
   Settings as SettingsIcon,
@@ -38,6 +39,9 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Telegram Notifications & Account Linking */}
+        <TelegramLinkCard />
+
         {/* Display Settings */}
         <Card elevated title="Interface & Table Preferences">
           <div className="space-y-4 text-xs">
