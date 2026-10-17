@@ -1,0 +1,39 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.prod.js",
+    "start:prod": "node src/server.prod.js",
+    "test": "node src/scripts/test-endpoints.js",
+    "test:v1": "node src/scripts/test-v1-modules.js",
+    "test:receipts": "node src/scripts/test-module3-receipts.js",
+    "test:stock": "node src/scripts/test-module4-stock-reports.js",
+    "test:dashboard": "node src/scripts/test-module5-dashboard.js",
+    "test:module5": "node --test test/module5-api.test.js",
+    "test:module6": "node --test test/module6-discrepancy.test.js",
+    "test:smoke:live": "node src/scripts/test-module5-6-smoke.js",
+    "test:arkiv": "node src/scripts/test-arkiv.js",
+    "test:resilience": "node src/scripts/test-resilience.js",
+    "generate-wallet": "node src/scripts/generate-wallet.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@arkiv-network/sdk": "^0.8.1",
+    "@clerk/express": "^2.1.80",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "viem": "^2.57.7",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
