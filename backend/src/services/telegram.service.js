@@ -263,17 +263,19 @@ class TelegramService {
 
     const shopId = shopIdArg.trim().toUpperCase();
     const shop = await shopService.getShopById(shopId);
+    const timelineData = await dashboardService.getShopTimeline(shopId, { limit: 5 });
+    const items = timelineData?.items || [];
 
-    if (!shop) {
+    if (!shop && items.length === 0) {
       return await this.sendMessage(
         chatId,
         `🔍 <b>Shop Not Found:</b>\nNo ration shop with ID <code>${shopId}</code> was found registered on Arkiv Tiramisu.`
       );
     }
 
-    const p = shop.payload || {};
-    const timelineData = await dashboardService.getShopTimeline(shopId, { limit: 5 });
-    const items = timelineData?.items || [];
+    const p = shop?.payload || {};
+    const districtText = p.district || items[0]?.district || 'N/A';
+    const stateText = p.state || 'N/A';
 
     // Filter recent dispatches, stock reports, and discrepancies
     const recentDispatches = items.filter((i) => i.recordType === 'dispatch').slice(0, 3);
@@ -283,9 +285,9 @@ class TelegramService {
     const msgLines = [
       `🏛️ <b>Fair Price Shop Overview</b>`,
       `━━━━━━━━━━━━━━━━━━━━`,
-      `🏷️ <b>Name:</b> ${p.name || 'Fair Price Shop'}`,
+      `🏷️ <b>Name:</b> ${p.name || `Fair Price Shop (${shopId})`}`,
       `📍 <b>ID:</b> <code>${shopId}</code>`,
-      `🗺️ <b>District:</b> ${p.district || 'N/A'}, ${p.state || 'N/A'}`,
+      `🗺️ <b>District:</b> ${districtText}${stateText !== 'N/A' ? `, ${stateText}` : ''}`,
       `👥 <b>Beneficiaries:</b> ${p.allocatedBeneficiaries || 'N/A'}`,
       `━━━━━━━━━━━━━━━━━━━━`,
       `🚚 <b>Recent Dispatches:</b>`,
@@ -318,7 +320,10 @@ class TelegramService {
       }
     }
 
-    msgLines.push(`\n🔗 <a href="${EXPLORER_BASE}/entity/${shop.key}">View Shop on Arkiv Explorer</a>`);
+    const explorerKey = shop?.key || items[0]?.entityKey;
+    if (explorerKey) {
+      msgLines.push(`\n🔗 <a href="${EXPLORER_BASE}/entity/${explorerKey}">View Shop on Arkiv Explorer</a>`);
+    }
     msgLines.push(`\n<i>Tip: Use <code>/subscribe ${shopId}</code> to receive updates for this shop.</i>`);
 
     await this.sendMessage(chatId, msgLines.join('\n'));
@@ -423,18 +428,24 @@ class TelegramService {
     }
     const shopId = shopIdArg.trim().toUpperCase();
     const shop = await shopService.getShopById(shopId);
+    let shopName = shop?.payload?.name;
+
     if (!shop) {
-      return await this.sendMessage(
-        chatId,
-        `🔍 <b>Shop Not Found:</b> No shop with ID <code>${shopId}</code> registered on Arkiv.`
-      );
+      const timelineData = await dashboardService.getShopTimeline(shopId, { limit: 1 });
+      if (!timelineData?.items?.length) {
+        return await this.sendMessage(
+          chatId,
+          `🔍 <b>Shop Not Found:</b> No shop with ID <code>${shopId}</code> registered on Arkiv.`
+        );
+      }
+      shopName = `Fair Price Shop (${shopId})`;
     }
 
     const added = telegramStore.subscribeCitizen(shopId, chatId);
     if (added) {
       await this.sendMessage(
         chatId,
-        `🔔 <b>Subscribed!</b>\nYou will receive public dispatch updates for shop <code>${shopId}</code> (${shop.payload?.name || 'Fair Price Shop'}).\n\nTo unsubscribe anytime, send: <code>/unsubscribe ${shopId}</code>`
+        `🔔 <b>Subscribed!</b>\nYou will receive public dispatch updates for shop <code>${shopId}</code> (${shopName || 'Fair Price Shop'}).\n\nTo unsubscribe anytime, send: <code>/unsubscribe ${shopId}</code>`
       );
     } else {
       await this.sendMessage(chatId, `ℹ️ You are already subscribed to updates for shop <code>${shopId}</code>.`);
