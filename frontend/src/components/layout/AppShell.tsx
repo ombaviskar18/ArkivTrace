@@ -16,7 +16,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children, onRefresh }) => {
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#02090D] flex text-[#F1F8FC] relative">
+    <div className="min-h-screen bg-[#02090D] flex text-[#F1F8FC] relative" suppressHydrationWarning>
       {/* Desktop Sticky Sidebar */}
       <div className="hidden lg:block shrink-0">
         <Sidebar />

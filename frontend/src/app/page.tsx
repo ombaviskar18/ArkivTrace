@@ -102,7 +102,7 @@ export default function DashboardPage() {
 
         <div className="flex items-center gap-3 z-10 self-end sm:self-auto">
           {summary && (
-            <span className="text-[11px] text-[#607987] hidden md:inline">
+            <span className="text-[11px] text-[#607987] hidden md:inline" suppressHydrationWarning>
               Refreshed: {formatDate(summary.lastRefreshed)}
             </span>
           )}
