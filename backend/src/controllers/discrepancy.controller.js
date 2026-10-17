@@ -1,4 +1,5 @@
 import { discrepancyService } from '../services/discrepancy.service.js';
+import { telegramService } from '../services/telegram.service.js';
 
 export const discrepancyController = {
   async listDiscrepancies(req, res, next) {
@@ -40,6 +41,23 @@ export const discrepancyController = {
   async createPublicDiscrepancy(req, res, next) {
     try {
       const result = await discrepancyService.createPublicDiscrepancyReport(req.body);
+
+      if (!result.duplicate && ['major', 'critical'].includes(result.severity)) {
+        setImmediate(async () => {
+          try {
+            await telegramService.notifyDiscrepancyRecorded({
+              discrepancyId: result.discrepancyId,
+              shopId: result.shopId,
+              severity: result.severity,
+              entityKey: result.entityKey,
+              txHash: result.txHash,
+              evidenceEntityKeys: result.evidenceEntityKeys,
+            });
+          } catch (tgErr) {
+            console.warn('[DiscrepancyController] Telegram alert skipped/failed:', tgErr.message);
+          }
+        });
+      }
 
       return res.status(result.duplicate ? 200 : 201).json({
         success: true,

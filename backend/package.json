@@ -16,6 +16,7 @@
     "test:module5": "node --test test/module5-api.test.js",
     "test:module6": "node --test test/module6-discrepancy.test.js",
     "test:auth": "node --test test/auth-security.test.js",
+    "test:telegram": "node --test test/telegram-bot.test.js",
     "test:smoke:live": "node src/scripts/test-module5-6-smoke.js",
     "test:arkiv": "node src/scripts/test-arkiv.js",
     "test:resilience": "node src/scripts/test-resilience.js",

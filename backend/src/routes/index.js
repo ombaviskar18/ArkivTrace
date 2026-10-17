@@ -7,6 +7,7 @@ import stockReportRoutes from './stock-report.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import recordsRoutes from './records.routes.js';
 import discrepancyRoutes from './discrepancy.routes.js';
+import telegramRoutes from './telegram.routes.js';
 
 const apiRouter = Router();
 
@@ -30,6 +31,8 @@ apiRouter.use('/v1/stock-reports', stockReportRoutes);
 apiRouter.use('/v1/dashboard', dashboardRoutes);
 apiRouter.use('/v1/records', recordsRoutes);
 apiRouter.use('/v1/discrepancies', discrepancyRoutes);
+apiRouter.use('/v1/telegram', telegramRoutes);
+
 
 export default apiRouter;
 

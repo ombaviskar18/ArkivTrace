@@ -1,4 +1,5 @@
 import { receiptService } from '../services/receipt.service.js';
+import { telegramService } from '../services/telegram.service.js';
 
 export const receiptController = {
   /**
@@ -9,6 +10,29 @@ export const receiptController = {
   async createReceipt(req, res, next) {
     try {
       const result = await receiptService.createReceipt(req.body);
+
+      // Asynchronously trigger Telegram alert if discrepancy detected
+      if (result.discrepancy?.detected) {
+        setImmediate(async () => {
+          try {
+            await telegramService.notifyDiscrepancyRecorded({
+              discrepancyId: `DISC-${result.receiptId}-${result.dispatchId}`,
+              shopId: result.shopId,
+              severity: result.discrepancy.status,
+              discrepancyKg: result.discrepancy.discrepancyKg,
+              discrepancyPercent: result.discrepancy.discrepancyPercent,
+              dispatchedQuantityKg: result.discrepancy.dispatchedQuantityKg,
+              receivedQuantityKg: result.discrepancy.receivedQuantityKg,
+              entityKey: result.discrepancy.entityKey,
+              txHash: result.discrepancy.txHash,
+              receiptId: result.receiptId,
+              dispatchId: result.dispatchId,
+            });
+          } catch (tgErr) {
+            console.warn('[ReceiptController] Telegram alert skipped/failed:', tgErr.message);
+          }
+        });
+      }
 
       const discrepancyMsg =
         result.discrepancy.detected

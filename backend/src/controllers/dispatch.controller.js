@@ -1,4 +1,5 @@
 import { dispatchService } from '../services/dispatch.service.js';
+import { telegramService } from '../services/telegram.service.js';
 
 export const dispatchController = {
   /**
@@ -8,6 +9,16 @@ export const dispatchController = {
   async createDispatch(req, res, next) {
     try {
       const result = await dispatchService.createDispatch(req.body);
+
+      // Asynchronously trigger Telegram notification; outages must never fail the HTTP response
+      setImmediate(async () => {
+        try {
+          await telegramService.notifyDispatchCreated(result);
+        } catch (tgErr) {
+          console.warn('[DispatchController] Telegram notification skipped/failed:', tgErr.message);
+        }
+      });
+
       return res.status(201).json({
         success: true,
         message: `Grain dispatch '${result.dispatchId}' successfully recorded on Arkiv Tiramisu database`,

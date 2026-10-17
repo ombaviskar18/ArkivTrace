@@ -1,4 +1,5 @@
 import { stockReportService } from '../services/stock-report.service.js';
+import { telegramService } from '../services/telegram.service.js';
 
 export const stockReportController = {
   /**
@@ -10,6 +11,26 @@ export const stockReportController = {
       const result = await stockReportService.createStockReport(req.body);
 
       const { stockStatus, stockDifferenceKg, receiptCount } = result.stockAnalysis;
+
+      // Asynchronously trigger Telegram alert if stock mismatch discrepancy recorded
+      if (stockStatus === 'MISMATCH' && result.discrepancy?.detected) {
+        setImmediate(async () => {
+          try {
+            await telegramService.notifyDiscrepancyRecorded({
+              discrepancyId: `SDISC-${result.reportId}`,
+              shopId: result.shopId,
+              severity: 'major',
+              discrepancyStatus: 'stock_mismatch',
+              stockDifferenceKg,
+              entityKey: result.discrepancy.entityKey,
+              txHash: result.discrepancy.txHash,
+              reportId: result.reportId,
+            });
+          } catch (tgErr) {
+            console.warn('[StockReportController] Telegram alert skipped/failed:', tgErr.message);
+          }
+        });
+      }
 
       const statusMsg =
         stockStatus === 'MATCH'
