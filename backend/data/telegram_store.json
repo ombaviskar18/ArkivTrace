@@ -1,13 +1,13 @@
 {
   "linkCodes": {
-    "757286": {
+    "688998": {
       "clerkUserId": "demo-user",
       "role": "operator",
       "assignedShopIds": [
         "FPS-DEL-001"
       ],
-      "createdAt": "2026-10-17T13:00:55.836Z",
-      "expiresAt": "2026-10-17T13:15:55.836Z"
+      "createdAt": "2026-10-17T15:07:10.781Z",
+      "expiresAt": "2026-10-17T15:22:10.781Z"
     }
   },
   "linkedUsers": {
@@ -17,13 +17,13 @@
       "assignedShopIds": [
         "FPS-NOTIFY-SHOP"
       ],
-      "linkedAt": "2026-10-17T13:00:55.284Z"
+      "linkedAt": "2026-10-17T15:07:10.516Z"
     },
     "admin_user_1": {
       "telegramChatId": "22222",
       "role": "admin",
       "assignedShopIds": [],
-      "linkedAt": "2026-10-17T13:00:55.288Z"
+      "linkedAt": "2026-10-17T15:07:10.517Z"
     }
   },
   "chatToUser": {
@@ -42,11 +42,11 @@
   },
   "shopSubscriptions": {},
   "notifiedDispatches": {
-    "DISP-NOTIFY-1": "2026-10-17T13:00:55.289Z",
-    "DISP-FAIL-SAFE": "2026-10-17T13:00:55.295Z"
+    "DISP-NOTIFY-1": "2026-10-17T15:07:10.520Z",
+    "DISP-FAIL-SAFE": "2026-10-17T15:07:10.541Z"
   },
   "notifiedDiscrepancies": {
-    "DISC-NOTIFY-1": "2026-10-17T13:00:55.291Z"
+    "DISC-NOTIFY-1": "2026-10-17T15:07:10.539Z"
   },
   "remindersSent": {}
 }
