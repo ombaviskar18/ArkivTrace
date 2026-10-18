@@ -79,6 +79,7 @@ function createTestApp(authSimulator = null) {
 test('1. Helper functions extract roles and shop IDs strictly from Clerk claims', () => {
   // Never derive from headers
   assert.equal(normalizedRole(' ADMIN '), 'admin');
+  assert.equal(normalizedRole('SHOP_OPERATOR'), 'operator');
   assert.equal(normalizedRole(null), null);
   assert.equal(normalizedRole(undefined), null);
 

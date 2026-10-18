@@ -31,12 +31,14 @@ class ShopService {
     };
 
     // 3. Full record payload
-    const payload = {
-      ...shopData,
+    const payload = { ...shopData };
+    delete payload.operatorName;
+    delete payload.operatorAddress;
+    Object.assign(payload, {
       project: 'arkivtrace',
       entityType: 'shop',
       createdAt: new Date().toISOString(),
-    };
+    });
 
     // 4. Submit to Arkiv (stores for 180 days by default)
     const result = await arkivService.createEntity({

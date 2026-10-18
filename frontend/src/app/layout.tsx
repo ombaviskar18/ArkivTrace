@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, JetBrains_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import { ClerkAuthSync } from "@/components/auth/ClerkAuthSync";
 import "./globals.css";
 
@@ -41,7 +40,6 @@ export default function RootLayout({
     <ClerkProvider
       dynamic
       appearance={{
-        theme: dark,
         variables: {
           colorPrimary: '#3b82f6',
           colorPrimaryForeground: '#FFFFFF',

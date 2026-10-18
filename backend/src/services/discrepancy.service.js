@@ -25,8 +25,6 @@ function makePublicDiscrepancyId(payload) {
       description: payload.description,
       evidenceEntityKeys: payload.evidenceEntityKeys,
       observedDiscrepancyKg: payload.observedDiscrepancyKg ?? null,
-      reporterName: payload.reporterName,
-      reporterContact: payload.reporterContact,
     }))
     .digest('hex')
     .slice(0, 16)
@@ -107,7 +105,15 @@ class DiscrepancyService {
     };
 
     const record = {
-      ...payload,
+      shopId: payload.shopId,
+      period: payload.period,
+      issueType: payload.issueType,
+      severity: payload.severity,
+      description: payload.description,
+      evidenceEntityKeys: payload.evidenceEntityKeys || [],
+      ...(payload.observedDiscrepancyKg !== undefined
+        ? { observedDiscrepancyKg: payload.observedDiscrepancyKg }
+        : {}),
       project: 'arkivtrace',
       entityType: 'discrepancy',
       discrepancyId,
@@ -203,7 +209,6 @@ class DiscrepancyService {
       reviewDecision: reviewData.decision,
       reviewerRole,
       notes: reviewData.notes || '',
-      reviewerName: reviewData.reviewerName || 'admin',
       evidenceEntityKeys,
       shopId: discrepancy.shopId,
       period: discrepancy.period || null,

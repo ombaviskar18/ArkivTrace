@@ -35,6 +35,7 @@ async function getUserMetadata(userId) {
 export const normalizedRole = (value) => {
   if (value === null || value === undefined) return null;
   const result = value.toString().toLowerCase().trim();
+  if (result === 'shop_operator') return 'operator';
   return result || null;
 };
 
@@ -163,6 +164,8 @@ export const requireRole = (allowedRoles = []) => async (req, res, next) => {
       }
       if (assignedShopIds.length === 0 && metadata?.shopId) {
         assignedShopIds = [String(metadata.shopId).trim().toUpperCase()];
+      } else if (assignedShopIds.length === 0) {
+        assignedShopIds = readClerkAssignedShopIds({ sessionClaims: { publicMetadata: metadata } });
       }
     }
 

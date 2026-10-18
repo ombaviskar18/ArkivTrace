@@ -39,15 +39,17 @@ class DispatchService {
     };
 
     // 4. Record payload
-    const payload = {
-      ...dispatchData,
+    const payload = { ...dispatchData };
+    delete payload.driverName;
+    delete payload.driverPhone;
+    Object.assign(payload, {
       project: 'arkivtrace',
       entityType: 'dispatch',
       shopEntityKey: targetShop?.key || null,
       shopName: targetShop?.payload?.name || null,
       status: 'dispatched',
       createdAt: new Date().toISOString(),
-    };
+    });
 
     // 5. Submit to Arkiv
     const result = await arkivService.createEntity({

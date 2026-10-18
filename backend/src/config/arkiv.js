@@ -61,8 +61,7 @@ export const isTransientRpcError = (error) => {
   if (!error) return false;
   if (
     error instanceof ArkivRpcUnavailableError ||
-    error.code === 'ARKIV_RPC_UNAVAILABLE' ||
-    error.code === 'ARKIV_RPC_RATE_LIMITED'
+    error.code === 'ARKIV_RPC_UNAVAILABLE'
   ) {
     return true;
   }

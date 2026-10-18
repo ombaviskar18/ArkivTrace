@@ -75,8 +75,9 @@ class ReceiptService {
     };
 
     // 5. Full payload stored as JSON on Arkiv
-    const payload = {
-      ...receiptData,
+    const payload = { ...receiptData };
+    delete payload.receiverName;
+    Object.assign(payload, {
       project: 'arkivtrace',
       entityType: 'receipt',
       dispatchEntityKey: dispatch.key,
@@ -86,7 +87,7 @@ class ReceiptService {
       discrepancyStatus,
       status: 'confirmed',
       createdAt: new Date().toISOString(),
-    };
+    });
 
     // 6. Write receipt entity to Arkiv (do NOT retry — mutation must not be duplicated)
     const receiptResult = await arkivService.createEntity({

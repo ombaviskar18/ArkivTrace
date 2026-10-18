@@ -27,8 +27,6 @@ export const createPublicDiscrepancySchema = z.object({
     description: z.string({ required_error: 'description is required' }).trim().min(10).max(500),
     evidenceEntityKeys: z.array(z.string().trim().min(3).max(80)).default([]),
     observedDiscrepancyKg: wholeKg('observedDiscrepancyKg').optional(),
-    reporterName: z.string().trim().max(64).optional().default('Anonymous'),
-    reporterContact: z.string().trim().max(128).optional().default(''),
     reportId: z.string().trim().max(64).optional(),
   }),
 });
@@ -37,6 +35,5 @@ export const reviewDiscrepancySchema = z.object({
   body: z.object({
     decision: z.enum(['under_review', 'resolved', 'rejected']),
     notes: z.string().trim().max(500).optional().default(''),
-    reviewerName: z.string().trim().max(64).optional().default('admin'),
   }),
 });
