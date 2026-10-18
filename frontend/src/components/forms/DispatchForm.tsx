@@ -13,7 +13,7 @@ interface DispatchFormProps {
 export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel }) => {
   const { role, isAdmin } = useUserRole();
   const [formData, setFormData] = useState<CreateDispatchInput>({
-    deliveryId: `DEL-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+    deliveryId: 'DEL-2026-8492',
     depotId: 'DEP-FCI-04',
     destinationShopId: 'FPS-2041',
     district: 'Raigad',
@@ -21,7 +21,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
     commodity: 'Wheat',
     quantityKg: 10000,
     truckNumber: 'MH-06-BW-4821',
-    sealNumber: `SEAL-ARK-${Math.floor(1000 + Math.random() * 9000)}`,
+    sealNumber: 'SEAL-ARK-9421',
   });
 
   const [isLoading, setIsLoading] = useState(false);

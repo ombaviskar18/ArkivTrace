@@ -17,6 +17,7 @@ import {
   ScanSearch,
   ArrowRight,
   LayoutDashboard,
+  Send,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -143,11 +144,13 @@ export default function HomePage() {
                 </Link>
 
                 <Link
-                  href="/evidence"
+                  href="https://t.me/ArkivTraceAlert_Bot"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-xl font-bold text-sm bg-[#05131C] text-[#F1F8FC] border border-[#3b82f6]/30 hover:border-[#3b82f6]/70 hover:bg-[#2563eb]/15 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                 >
-                  <Database className="w-4 h-4 text-[#3b82f6]" />
-                  <span>Explore Public Evidence</span>
+                  <Send className="w-4 h-4 text-[#38bdf8]" />
+                  <span>Join on Telegram</span>
                 </Link>
               </div>
 
@@ -314,13 +317,13 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mb-16 space-y-4">
               <p className="text-xs sm:text-sm font-semibold text-[#3b82f6] tracking-wider uppercase">
-                Enterprise Food Security Platform
+                Secured Public Distribution System
               </p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                Protect what matters most
+                Core Features
               </h2>
               <p className="text-sm sm:text-base text-[#91A9B7] leading-relaxed">
-                Comprehensive cybersecurity and blockchain solutions that protect the public distribution system from evolving threats while ensuring complete food security and compliance.
+                Real-time traceability, tamper-proof records, and automated verification—all anchored to the Arkiv Tiramisu blockchain for verifiable food security.
               </p>
             </div>
 

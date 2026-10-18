@@ -14,7 +14,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({ onSuccess, onCancel }) => {
   const { isAdmin } = useUserRole();
 
   const [formData, setFormData] = useState<CreateShopInput>({
-    shopId: `FPS-MH-${Math.floor(400 + Math.random() * 500)}`,
+    shopId: 'FPS-MH-482',
     name: 'Fair Price Shop',
     operatorName: 'Ramesh Patil',
     operatorAddress: '0x1234567890123456789012345678901234567890',
