@@ -86,10 +86,10 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
       )}
 
       {/* Privacy Guarantee Note */}
-      <div className="p-3 rounded-lg bg-[#071B25] border border-[#00C8FF]/20 flex items-start gap-2 text-xs text-[#91A9B7]">
-        <ShieldAlert className="w-4 h-4 text-[#55E5FF] shrink-0 mt-0.5" />
+      <div className="p-3 rounded-lg bg-[#071B25] border border-[#3b82f6]/20 flex items-start gap-2 text-xs text-[#91A9B7]">
+        <ShieldAlert className="w-4 h-4 text-[#60a5fa] shrink-0 mt-0.5" />
         <div>
-          <span className="font-semibold text-[#55E5FF]">Auditable & Anonymized:</span>{' '}
+          <span className="font-semibold text-[#60a5fa]">Auditable & Anonymized:</span>{' '}
           Reports target supply-chain grain movement only. Do not provide ration card numbers or beneficiary identities.
         </div>
       </div>
@@ -105,7 +105,7 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
             onChange={(e) =>
               setFormData({ ...formData, relatedDeliveryId: e.target.value })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none font-mono"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none font-mono"
             placeholder="e.g. DEL-2026-9041"
           />
         </div>
@@ -118,7 +118,7 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
             type="text"
             value={formData.shopId}
             onChange={(e) => setFormData({ ...formData, shopId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. FPS-2041"
           />
         </div>
@@ -139,7 +139,7 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
                   | 'Delayed Receipt',
               })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Transit Loss">Transit Loss (Depot vs Delivery Weight)</option>
             <option value="Weighing Discrepancy">Weighing / Scale Calibration Discrepancy</option>
@@ -161,7 +161,7 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
                 reportedQuantityDiffKg: Number(e.target.value),
               })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#FB7185] focus:border-[#00C8FF] focus:outline-none font-semibold"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#FB7185] focus:border-[#3b82f6] focus:outline-none font-semibold"
             placeholder="e.g. -120"
           />
         </div>
@@ -174,14 +174,14 @@ export const DiscrepancyForm: React.FC<DiscrepancyFormProps> = ({
             rows={3}
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none placeholder-[#607987]"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none placeholder-[#607987]"
             placeholder="State observed weights, seal conditions, scale reading variance, or timing anomalies..."
             required
           />
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#00C8FF]/15">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#3b82f6]/15">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel

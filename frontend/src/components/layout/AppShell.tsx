@@ -9,9 +9,10 @@ import { X } from 'lucide-react';
 interface AppShellProps {
   children: React.ReactNode;
   onRefresh?: () => void;
+  fullWidth?: boolean;
 }
 
-export const AppShell: React.FC<AppShellProps> = ({ children, onRefresh }) => {
+export const AppShell: React.FC<AppShellProps> = ({ children, onRefresh, fullWidth = false }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
 
@@ -29,11 +30,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children, onRefresh }) => {
             className="fixed inset-0 bg-[#02090D]/80 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="relative w-72 max-w-[85vw] h-full bg-[#041017] border-r border-[#00C8FF]/20 shadow-2xl z-10 flex flex-col">
-            <div className="p-3 border-b border-[#00C8FF]/15 flex items-center justify-end">
+          <div className="relative w-72 max-w-[85vw] h-full bg-[#041017] border-r border-[#3b82f6]/20 shadow-2xl z-10 flex flex-col">
+            <div className="p-3 border-b border-[#3b82f6]/15 flex items-center justify-end">
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 text-[#91A9B7] hover:text-[#55E5FF] hover:bg-[#071B25] rounded-lg"
+                className="p-1.5 text-[#91A9B7] hover:text-[#60a5fa] hover:bg-[#071B25] rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -52,20 +53,20 @@ export const AppShell: React.FC<AppShellProps> = ({ children, onRefresh }) => {
           onOpenSubmitModal={() => setSubmitModalOpen(true)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+        <main className={fullWidth ? 'flex-1 w-full overflow-x-hidden' : 'flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6'}>
           {children}
         </main>
 
         {/* Global Footer */}
-        <footer className="border-t border-[#00C8FF]/10 py-6 px-4 sm:px-8 text-center text-xs text-[#607987] bg-[#02090D]/60">
+        <footer className="border-t border-[#3b82f6]/15 py-6 px-4 sm:px-8 text-center text-xs text-[#607987] bg-[#02090D]/60">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00C8FF] inline-block animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#3b82f6] inline-block animate-pulse" />
               <span className="font-semibold text-[#91A9B7]">ArkivTrace</span> —
               <span>Public Distribution System Intelligence</span>
             </div>
             <div className="text-[11px] text-[#607987]">
-              Immutable audit verification anchored to Arkiv Tiramisu testnet. Synthetic demo data mode.
+              © 2026 ArkivTrace All rights reserved
             </div>
           </div>
         </footer>

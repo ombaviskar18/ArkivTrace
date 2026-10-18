@@ -1,379 +1,386 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
-import { StatCard } from '@/components/ui/StatCard';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { DispatchReceiptChart } from '@/components/dashboard/DispatchReceiptChart';
-import { ReconciliationChart } from '@/components/dashboard/ReconciliationChart';
-import { RecentActivityTable } from '@/components/dashboard/RecentActivityTable';
-import { RecentDiscrepancies } from '@/components/dashboard/RecentDiscrepancies';
-import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { api } from '@/lib/api';
-import { RoleGuard } from '@/components/auth/RoleGuard';
-import { useUserRole } from '@/lib/auth';
+import TechText from '@/components/ui/TechText';
+import Radar from '@/components/ui/Radar';
+import InfiniteSpiral from '@/components/ui/InfiniteSpiral';
 import {
-  DashboardSummary,
-  DepotDispatch,
-  ShopReceipt,
-  Discrepancy,
-} from '@/types/api';
-import { formatWeight, formatDate } from '@/lib/formatters';
-import {
-  Truck,
-  Package,
-  PackageCheck,
-  AlertTriangle,
   ShieldCheck,
-  Activity,
-  ArrowRight,
+  Lock,
+  Eye,
   Database,
-  Layers,
-  Sparkles,
-  RefreshCw,
-  Store,
+  AlertTriangle,
+  FileCheck2,
+  Fingerprint,
+  ScanSearch,
+  ArrowRight,
+  LayoutDashboard,
 } from 'lucide-react';
 
-export default function DashboardPage() {
-  const { role, shopId, isAdmin, isOperator } = useUserRole();
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [dispatches, setDispatches] = useState<DepotDispatch[]>([]);
-  const [receipts, setReceipts] = useState<ShopReceipt[]>([]);
-  const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+export default function HomePage() {
+  const spiralImages = [
+    { src: '/images/a1.png', alt: 'Arkiv Grain Depot Weighbridge' },
+    { src: '/images/a2.png', alt: 'PDS Supply Chain Logistics' },
+    { src: '/images/a3.png', alt: 'Fair Price Shop Delivery' },
+    { src: '/images/a4.png', alt: 'Blockchain Immutable Ledger' },
+    { src: '/images/a5.png', alt: 'Citizen Ration Distribution' },
+    { src: '/images/a6.png', alt: 'Cryptographic Audit Verification' },
+  ];
 
-  const loadData = async () => {
-    try {
-      const [sum, disp, rcpt, disc] = await Promise.all([
-        api.getDashboardSummary(),
-        api.getDispatches(),
-        api.getReceipts(),
-        api.getDiscrepancies(),
-      ]);
-      setSummary(sum);
-      setDispatches(disp);
-      setReceipts(rcpt);
-      setDiscrepancies(disc);
-    } catch (err) {
-      console.error('Failed to load dashboard data:', err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-    loadData();
-  };
-
-  const visibleDispatches = isOperator && shopId
-    ? dispatches.filter((d) => d.destinationShopId.toUpperCase() === shopId.toUpperCase())
-    : dispatches;
-
-  const visibleReceipts = isOperator && shopId
-    ? receipts.filter((r) => r.shopId.toUpperCase() === shopId.toUpperCase())
-    : receipts;
-
-  const visibleDiscrepancies = isOperator && shopId
-    ? discrepancies.filter((d) => d.shopId && d.shopId.toUpperCase() === shopId.toUpperCase())
-    : discrepancies;
+  const features = [
+    {
+      icon: <AlertTriangle className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Discrepancy Detection',
+      description: 'Real-time monitoring and algorithmic alerts comparing depot releases against shop receipts.',
+    },
+    {
+      icon: <Lock className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Arkiv Blockchain Anchoring',
+      description: 'End-to-end cryptographic proofs on the Arkiv Tiramisu Layer 1 network for every grain movement.',
+    },
+    {
+      icon: <Eye className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Supply Chain Monitoring',
+      description: '24/7 transparent surveillance of food grain transit across state depots and Fair Price Shops.',
+    },
+    {
+      icon: <Database className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Immutable Evidence Ledger',
+      description: 'Permanent decentralized records with verifiable entity keys, transaction hashes, and block proofs.',
+    },
+    {
+      icon: <ShieldCheck className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Leakage & Diversion Prevention',
+      description: 'Proactive algorithmic defense flagging transit losses and diversion attempts before receipt confirmation.',
+    },
+    {
+      icon: <FileCheck2 className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Compliance Management',
+      description: 'Strict automated adherence to National Food Security Act (NFSA) and Targeted PDS guidelines.',
+    },
+    {
+      icon: <Fingerprint className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Role-Based Authentication',
+      description: 'Enterprise Clerk security strictly isolating Admin depot authorities and local shop operators.',
+    },
+    {
+      icon: <ScanSearch className="w-6 h-6 text-[#3b82f6]" />,
+      title: 'Cross-Shop Access Isolation',
+      description: 'Granular shop license scoping ensuring operators can only view and confirm their assigned deliveries.',
+    },
+  ];
 
   return (
-    <AppShell onRefresh={loadData}>
-      <RoleGuard allowedRoles={['admin', 'operator']}>
-        {isOperator && (
-          <div className="p-3.5 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs shadow-[0_0_15px_rgba(0,200,255,0.1)]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#00C8FF]/15 border border-[#00C8FF]/30 flex items-center justify-center text-[#00C8FF]">
-                <Store className="w-4 h-4" />
+    <AppShell fullWidth>
+      <div className="relative text-[#F1F8FC] selection:bg-[#3b82f6]/30 selection:text-[#60a5fa] overflow-x-hidden">
+        {/* Background Ambient Glow Gradients */}
+        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-[#3b82f6]/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+        <div className="fixed top-1/3 right-10 w-[500px] h-[500px] bg-[#3b82f6]/10 rounded-full blur-[150px] pointer-events-none -z-10" />
+        <div className="fixed bottom-10 left-1/3 w-[600px] h-[600px] bg-[#2563eb]/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+
+        {/* Hero Section */}
+        <section className="relative pt-6 pb-16 md:pt-10 md:pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column: TechText Name + Tagline + Actions */}
+            <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
+              {/* Interactive TechText Canvas Display - Directly on page without any square background box */}
+              <div className="w-full h-[180px] sm:h-[250px] md:h-[320px] lg:h-[380px] relative flex items-center justify-start">
+                <TechText
+                  text="ArkivTrace"
+                  highlightIndex={5}
+                  highlightColor="#3b82f6"
+                  fontWeight={700}
+                  fontSize={150}
+                  reveal="letter"
+                  dashLength={4}
+                  dashGap={2}
+                  specks={15}
+                  intro="none"
+                  introDuration={2}
+                  clickKick
+                  guides={false}
+                  fontFamily=""
+                  letterSpacing={-0.05}
+                  accentColor="#3b82f6"
+                  reach={200}
+                  softness={0.7}
+                  lineStyle="dashed"
+                  strokeWidth={1.5}
+                  speed={1}
+                  bounce={0.4}
+                  selection
+                  labels
+                  color="#F1F8FC"
+                  align="left"
+                  draggable
+                  sweep
+                />
               </div>
-              <div>
-                <span className="text-[#F1F8FC] font-semibold">Dealer Operator View: </span>
-                <span className="text-[#91A9B7]">Scoped to Fair Price Shop </span>
-                <strong className="text-[#55E5FF] font-mono uppercase font-bold">{shopId || 'ASSIGNED-SHOP'}</strong>
+
+              {/* Tagline: Transparent web3 end-to-end auditable record for every Ration */}
+              <div className="space-y-3">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[#F1F8FC] leading-snug">
+                  Transparent web3 end-to-end auditable record for every{' '}
+                  <span className="text-[#3b82f6]">Ration</span>
+                </h2>
+
+                <p className="text-sm md:text-base text-[#91A9B7] leading-relaxed max-w-xl">
+                  Securing India&apos;s Public Distribution System through cryptographic grain dispatch anchoring, electronic weighbridge verification, and automated discrepancy reconciliation on the Arkiv blockchain.
+                </p>
+              </div>
+
+              {/* Hero CTAs */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  href="/dashboard"
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#3b82f6] to-[#2563eb] text-white hover:opacity-95 transition-all shadow-[0_0_25px_rgba(59,130,246,0.4)] flex items-center gap-2 group"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Launch Operations Dashboard</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+
+                <Link
+                  href="/evidence"
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm bg-[#05131C] text-[#F1F8FC] border border-[#3b82f6]/30 hover:border-[#3b82f6]/70 hover:bg-[#2563eb]/15 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                >
+                  <Database className="w-4 h-4 text-[#3b82f6]" />
+                  <span>Explore Public Evidence</span>
+                </Link>
+              </div>
+
+              {/* Quick Metrics */}
+              <div className="pt-4 grid grid-cols-3 gap-4 border-t border-[#3b82f6]/15">
+                <div>
+                  <p className="text-xl sm:text-2xl font-bold text-[#F1F8FC]">100%</p>
+                  <p className="text-xs text-[#91A9B7]">On-Chain Auditability</p>
+                </div>
+                <div>
+                  <p className="text-xl sm:text-2xl font-bold text-[#3b82f6]">0 Fraud</p>
+                  <p className="text-xs text-[#91A9B7]">Tamper-Proof Proofs</p>
+                </div>
+                <div>
+                  <p className="text-xl sm:text-2xl font-bold text-[#60a5fa]">Real-Time</p>
+                  <p className="text-xs text-[#91A9B7]">Discrepancy Alerts</p>
+                </div>
               </div>
             </div>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
-              Shop Scope Active
-            </span>
-          </div>
-        )}
-      {/* Network & Verification Status Banner */}
-      <div className="p-4 rounded-xl glass-panel-elevated border border-[#00C8FF]/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-full bg-gradient-to-l from-[#00C8FF]/10 to-transparent pointer-events-none" />
 
-        <div className="flex items-center gap-3 z-10">
-          <div className="w-10 h-10 rounded-xl bg-[#00C8FF]/10 border border-[#00C8FF]/30 flex items-center justify-center text-[#00C8FF] shadow-[0_0_15px_rgba(0,200,255,0.25)]">
-            <Activity className="w-5 h-5 animate-pulse" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[#F1F8FC] uppercase tracking-wider">
-                Arkiv Network:
-              </span>
-              <span className="text-xs font-mono font-semibold text-[#55E5FF]">
-                tiramisu testnet (#8291)
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-[#087DEB]/20 border border-[#00C8FF]/40 text-[10px] font-bold text-[#55E5FF] uppercase tracking-wider">
-                DEMO DATA MODE
-              </span>
-            </div>
-
-            <p className="text-xs text-[#91A9B7] mt-0.5">
-              Every grain accounted for. Every discrepancy traceable via immutable cryptographic anchors.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 z-10 self-end sm:self-auto">
-          {summary && (
-            <span className="text-[11px] text-[#607987] hidden md:inline" suppressHydrationWarning>
-              Refreshed: {formatDate(summary.lastRefreshed)}
-            </span>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            isLoading={refreshing}
-            icon={<RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />}
-          >
-            Refresh Data
-          </Button>
-        </div>
-      </div>
-
-      {/* Hero Headline matching reference screenshot */}
-      <div className="relative py-6 sm:py-8 px-6 rounded-2xl glass-panel border border-[#00C8FF]/20 overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-radial from-[#00C8FF]/15 to-transparent blur-3xl pointer-events-none" />
-
-        <div className="max-w-3xl space-y-3 z-10 relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00C8FF]/10 border border-[#00C8FF]/30 text-xs font-semibold text-[#55E5FF]">
-            <Sparkles className="w-3.5 h-3.5 text-[#00C8FF]" />
-            <span>Public Distribution System Transparency</span>
-          </div>
-
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#F1F8FC] leading-tight">
-            Traceable Grain Movement Across <span className="text-[#00C8FF]">Depots</span> & <span className="text-[#55E5FF]">Ration Shops</span>
-          </h2>
-
-          <p className="text-xs sm:text-sm text-[#91A9B7] leading-relaxed">
-            ArkivTrace anchors bulk grain dispatches, electronic weighbridge confirmations, and fair-price shop receipts to the Arkiv blockchain. Compare declared stock against community distribution records to reconcile variances instantly.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link href="/evidence">
-              <Button variant="primary" icon={<ShieldCheck className="w-4 h-4" />}>
-                Explore Arkiv Evidence
-              </Button>
-            </Link>
-            <Link href="/discrepancies">
-              <Button variant="secondary" icon={<AlertTriangle className="w-4 h-4" />}>
-                Audit Discrepancies
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* KPI Statistic Cards */}
-      {loading ? (
-        <LoadingSkeleton rows={2} />
-      ) : summary ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            title="Total Dispatches"
-            value={summary.totalDispatches}
-            subtitle="Active depot delivery consignments"
-            icon={<Truck className="w-5 h-5" />}
-            trend={{ value: '+14%', isPositive: true }}
-            accentColor="cyan"
-          />
-
-          <StatCard
-            title="Grain Dispatched"
-            value={formatWeight(summary.totalGrainDispatchedKg)}
-            subtitle="FCI & SWC depot release volume"
-            icon={<Package className="w-5 h-5" />}
-            accentColor="blue"
-          />
-
-          <StatCard
-            title="Shop Receipts"
-            value={`${summary.totalReceipts} Receipts`}
-            subtitle={`${summary.matchRatePercentage}% full weight match rate`}
-            icon={<PackageCheck className="w-5 h-5" />}
-            trend={{ value: '97.4% Match', isPositive: true }}
-            accentColor="success"
-          />
-
-          <StatCard
-            title="Active Discrepancies"
-            value={summary.totalDiscrepancies}
-            subtitle={`${summary.resolvedDiscrepancies} resolved upon field audit`}
-            icon={<AlertTriangle className="w-5 h-5" />}
-            trend={{ value: '4 Cases Open', isNeutral: true }}
-            accentColor="error"
-          />
-        </div>
-      ) : null}
-
-      {/* Analytics Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Dispatch vs Receipt Trends */}
-        <div className="lg:col-span-2">
-          <Card
-            elevated
-            title="Grain Dispatch vs Shop Receipt Trends"
-            subtitle="7-day comparison of depot outflow vs Fair Price Shop acknowledged weight (kg)"
-            headerAction={
-              <div className="flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1.5 text-[#55E5FF]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#00C8FF]" />
-                  Dispatched
-                </span>
-                <span className="flex items-center gap-1.5 text-[#91A9B7]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#087DEB]" />
-                  Received
-                </span>
+            {/* Right Column: WebGL Radar Animation - Full uncut circle */}
+            <div className="lg:col-span-6 relative flex items-start justify-center">
+              <div className="w-full max-w-[480px] lg:max-w-[520px] h-[380px] sm:h-[440px] lg:h-[480px] relative -mt-6 sm:-mt-12 lg:-mt-20 xl:-mt-24 pointer-events-auto flex items-center justify-center">
+                <Radar
+                  color="#3b82f6"
+                  mode="sweep"
+                  speed={1}
+                  trail={0.35}
+                  scale={0.88}
+                  ringCount={6}
+                  spokeCount={12}
+                  targets={6}
+                  clutter={0.35}
+                  mouseInteraction
+                  ticks
+                  glow={1.2}
+                  tilt={0}
+                  centerX={0.5}
+                  centerY={0.5}
+                  brightness={1.1}
+                  gridOpacity={1}
+                  lineWidth={1}
+                  grain={0.03}
+                  fade={0}
+                  opacity={1}
+                  intro
+                  lightMode={false}
+                />
               </div>
-            }
-          >
-            {summary ? (
-              <DispatchReceiptChart data={summary.trends} />
-            ) : (
-              <LoadingSkeleton rows={4} />
-            )}
-          </Card>
-        </div>
+            </div>
+          </div>
+        </section>
 
-        {/* Right 1 Col: Reconciliation Donut Chart */}
-        <div className="lg:col-span-1">
-          <Card
-            elevated
-            title="Reconciliation Audit Status"
-            subtitle="Cryptographically verified weight reconciliation"
-          >
-            {summary ? (
-              <ReconciliationChart data={summary.reconciliationBreakdown} />
-            ) : (
-              <LoadingSkeleton rows={4} />
-            )}
-          </Card>
-        </div>
+        {/* Section: How it Works (Images on Left, Steps on Right) */}
+        <section className="py-24 relative border-t border-[#3b82f6]/15">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              {/* Left Side: InfiniteSpiral directly on page without square container box */}
+              <div className="lg:col-span-6 relative flex items-center justify-center">
+                <div className="w-full h-[520px] sm:h-[600px] relative flex items-center justify-center">
+                  <InfiniteSpiral
+                    items={spiralImages}
+                    animationMode="auto"
+                    speed={0.55}
+                    radius={175}
+                    cardWidth={125}
+                    cardHeight={125}
+                    verticalSpacing={65}
+                    perspective={1000}
+                    cardRadius={12}
+                    centerScale={1.25}
+                    edgeBlur={6}
+                    cardsPerTurn={7}
+                    pauseOnHover
+                    direction="up"
+                    rotation={0}
+                    cardTilt={0}
+                    edgeFade={0.3}
+                    imageFit="cover"
+                    grayscale={0}
+                  />
+                </div>
+              </div>
+
+              {/* Right Side: 4 Steps */}
+              <div className="lg:col-span-6 space-y-8">
+                <div>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
+                    How it <span className="text-[#3b82f6] drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]">Works</span>
+                  </h2>
+                  <p className="text-sm text-[#91A9B7] mt-3 max-w-lg">
+                    A seamless 4-step cryptographic pipeline connecting central storage depots with local Fair Price Shops.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Step 1 */}
+                  <div className="flex items-start gap-5 group">
+                    <div className="w-12 h-12 rounded-full shrink-0 bg-[#03090F] border-2 border-[#3b82f6] text-[#3b82f6] flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(59,130,246,0.4)] group-hover:scale-105 group-hover:border-[#60a5fa] group-hover:text-[#60a5fa] transition-all">
+                      1
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                        Submit a Record
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#91A9B7] mt-1 leading-relaxed">
+                        Authorized users add dispatches, shop receipts, or stock reports through a simple and secure interface.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="flex items-start gap-5 group">
+                    <div className="w-12 h-12 rounded-full shrink-0 bg-[#03090F] border-2 border-[#3b82f6] text-[#3b82f6] flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(59,130,246,0.4)] group-hover:scale-105 group-hover:border-[#60a5fa] group-hover:text-[#60a5fa] transition-all">
+                      2
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                        Store on Arkiv
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#91A9B7] mt-1 leading-relaxed">
+                        Each record is securely written to the Arkiv network, creating a tamper-proof and transparent history.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="flex items-start gap-5 group">
+                    <div className="w-12 h-12 rounded-full shrink-0 bg-[#03090F] border-2 border-[#3b82f6] text-[#3b82f6] flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(59,130,246,0.4)] group-hover:scale-105 group-hover:border-[#60a5fa] group-hover:text-[#60a5fa] transition-all">
+                      3
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                        Verify and Track
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#91A9B7] mt-1 leading-relaxed">
+                        Browse records, check evidence, and trace the complete supply chain from depot to shop.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div className="flex items-start gap-5 group">
+                    <div className="w-12 h-12 rounded-full shrink-0 bg-[#03090F] border-2 border-[#3b82f6] text-[#3b82f6] flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(59,130,246,0.4)] group-hover:scale-105 group-hover:border-[#60a5fa] group-hover:text-[#60a5fa] transition-all">
+                      4
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                        Identify Discrepancies
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#91A9B7] mt-1 leading-relaxed">
+                        Compare quantities, detect mismatches, and get real-time alerts for investigation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section: Features Section */}
+        <section className="py-24 relative border-t border-[#3b82f6]/15 bg-[#03090F]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mb-16 space-y-4">
+              <p className="text-xs sm:text-sm font-semibold text-[#3b82f6] tracking-wider uppercase">
+                Enterprise Food Security Platform
+              </p>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Protect what matters most
+              </h2>
+              <p className="text-sm sm:text-base text-[#91A9B7] leading-relaxed">
+                Comprehensive cybersecurity and blockchain solutions that protect the public distribution system from evolving threats while ensuring complete food security and compliance.
+              </p>
+            </div>
+
+            {/* 8 Feature Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feat, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 rounded-2xl bg-[#041018]/60 border border-[#3b82f6]/15 hover:border-[#3b82f6]/40 transition-all group hover:bg-[#061522]/80 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-xl bg-[#3b82f6]/10 border border-[#3b82f6]/25 group-hover:scale-110 transition-transform">
+                        {feat.icon}
+                      </div>
+                      <h3 className="text-base font-bold text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                        {feat.title}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-[#91A9B7] leading-relaxed">
+                      {feat.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Direct Call to Action Banner */}
+        <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#041017] via-[#081B2B] to-[#041017] border border-[#3b82f6]/30 relative overflow-hidden text-center shadow-[0_0_50px_rgba(59,130,246,0.15)]">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#3b82f6]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 max-w-2xl mx-auto space-y-5">
+              <h3 className="text-2xl sm:text-4xl font-extrabold text-white">
+                Ready to verify ration distribution?
+              </h3>
+              <p className="text-sm text-[#91A9B7] leading-relaxed">
+                Access the operational dashboard to create dispatches, confirm delivery receipts, or inspect cryptographic evidence on the Arkiv testnet.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+                <Link
+                  href="/dashboard"
+                  className="px-8 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#3b82f6] to-[#2563eb] text-white hover:opacity-95 transition-all shadow-[0_0_25px_rgba(59,130,246,0.5)] flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Open Operations Dashboard</span>
+                </Link>
+                <Link
+                  href="/evidence"
+                  className="px-8 py-3.5 rounded-xl font-bold text-sm bg-[#03090F] text-[#F1F8FC] border border-[#3b82f6]/30 hover:border-[#3b82f6]/60 transition-all flex items-center gap-2"
+                >
+                  <Database className="w-4 h-4 text-[#3b82f6]" />
+                  <span>Search Arkiv Records</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-
-      {/* Bottom Operational Grid: Recent Activity & Discrepancies */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Activity Table */}
-        <div className="lg:col-span-2">
-          <Card
-            title="Recent Supply Chain Activity"
-            subtitle="Latest depot dispatch batches and fair-price shop confirmations"
-            headerAction={
-              <Link
-                href="/dispatches"
-                className="text-xs font-semibold text-[#00C8FF] hover:text-[#55E5FF] hover:underline inline-flex items-center gap-1"
-              >
-                <span>View Dispatches</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            }
-          >
-            <RecentActivityTable dispatches={visibleDispatches} receipts={visibleReceipts} />
-          </Card>
-        </div>
-
-        {/* Right 1 Col: Recent Discrepancies */}
-        <div className="lg:col-span-1">
-          <Card
-            title="Open Discrepancy Audits"
-            subtitle="Unresolved quantity variances requiring inspection"
-            headerAction={
-              <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FB7185]/20 text-[#FB7185] border border-[#FB7185]/30">
-                {visibleDiscrepancies.length} Active
-              </span>
-            }
-          >
-            <RecentDiscrepancies discrepancies={visibleDiscrepancies} />
-          </Card>
-        </div>
-      </div>
-
-      {/* 4 Pillars Section matching Reference Screenshot */}
-      <div className="pt-4">
-        <div className="text-center max-w-xl mx-auto mb-6">
-          <span className="text-xs font-bold text-[#00C8FF] uppercase tracking-wider">
-            Public Distribution Architecture
-          </span>
-          <h3 className="text-xl sm:text-2xl font-bold text-[#F1F8FC] mt-1">
-            Why Blockchain for Food Security?
-          </h3>
-          <p className="text-xs text-[#91A9B7] mt-1">
-            Redefining trust and transparency in the public distribution system through immutable data records.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-xl glass-panel border border-[#00C8FF]/15 hover:border-[#00C8FF]/40 transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#00C8FF]/10 text-[#00C8FF] border border-[#00C8FF]/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(0,200,255,0.2)]">
-              <Layers className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-bold text-[#F1F8FC] group-hover:text-[#55E5FF] transition-colors">
-              Depot Dispatches
-            </h4>
-            <p className="text-xs text-[#91A9B7] mt-1.5 leading-relaxed">
-              Every truck dispatch from FCI/SWC silos is signed with tamper-proof seal and quantity metadata.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl glass-panel border border-[#00C8FF]/15 hover:border-[#00C8FF]/40 transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#087DEB]/10 text-[#55E5FF] border border-[#087DEB]/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(8,125,235,0.2)]">
-              <PackageCheck className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-bold text-[#F1F8FC] group-hover:text-[#55E5FF] transition-colors">
-              Receipt Reconciliation
-            </h4>
-            <p className="text-xs text-[#91A9B7] mt-1.5 leading-relaxed">
-              Fair price shops acknowledge electronic weighbridge scale readings, automatically flagging transit loss.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl glass-panel border border-[#00C8FF]/15 hover:border-[#00C8FF]/40 transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#36D399]/10 text-[#36D399] border border-[#36D399]/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(54,211,153,0.2)]">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-bold text-[#F1F8FC] group-hover:text-[#55E5FF] transition-colors">
-              Anonymized Audits
-            </h4>
-            <p className="text-xs text-[#91A9B7] mt-1.5 leading-relaxed">
-              Distribution records protect citizen privacy without collecting ration card numbers or personal identities.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl glass-panel border border-[#00C8FF]/15 hover:border-[#00C8FF]/40 transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#FB7185]/10 text-[#FB7185] border border-[#FB7185]/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(251,113,133,0.2)]">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <h4 className="text-sm font-bold text-[#F1F8FC] group-hover:text-[#55E5FF] transition-colors">
-              Discrepancy Tracing
-            </h4>
-            <p className="text-xs text-[#91A9B7] mt-1.5 leading-relaxed">
-              Variances generate verifiable audit cases with immutable timestamps for fast administrative resolution.
-            </p>
-          </div>
-        </div>
-      </div>
-      </RoleGuard>
     </AppShell>
   );
 }

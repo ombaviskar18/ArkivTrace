@@ -68,7 +68,7 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Filter records or facility..."
-            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#3b82f6] focus:outline-none"
           />
         </div>
 
@@ -80,7 +80,7 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
               onClick={() => setTypeFilter(filter)}
               className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                 typeFilter === filter
-                  ? 'bg-[#00C8FF]/20 text-[#55E5FF] border border-[#00C8FF]/40'
+                  ? 'bg-[#3b82f6]/20 text-[#60a5fa] border border-[#3b82f6]/40'
                   : 'text-[#91A9B7] hover:text-[#F1F8FC] hover:bg-[#071B25]'
               }`}
             >
@@ -95,10 +95,10 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
       </div>
 
       {/* Table Container */}
-      <div className="overflow-x-auto rounded-xl border border-[#00C8FF]/15">
+      <div className="overflow-x-auto rounded-xl border border-[#3b82f6]/15">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
-            <tr className="bg-[#06151D] border-b border-[#00C8FF]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
+            <tr className="bg-[#06151D] border-b border-[#3b82f6]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
               <th className="py-3 px-4">Record ID</th>
               <th className="py-3 px-4">Type</th>
               <th className="py-3 px-4">Depot / Shop</th>
@@ -109,7 +109,7 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
               <th className="py-3 px-4 text-right">Inspect</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#00C8FF]/10">
+          <tbody className="divide-y divide-[#3b82f6]/10">
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={8} className="py-8 text-center text-[#91A9B7]">
@@ -122,13 +122,13 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
                   key={`${item.type}-${item.id}`}
                   className="hover:bg-[#071B25]/80 transition-colors group"
                 >
-                  <td className="py-3 px-4 font-mono font-semibold text-[#55E5FF]">
+                  <td className="py-3 px-4 font-mono font-semibold text-[#60a5fa]">
                     {item.recordId}
                   </td>
                   <td className="py-3 px-4">
                     <span className="inline-flex items-center gap-1 text-[#91A9B7]">
                       {item.type === 'Depot Dispatch' ? (
-                        <Truck className="w-3.5 h-3.5 text-[#00C8FF]" />
+                        <Truck className="w-3.5 h-3.5 text-[#3b82f6]" />
                       ) : (
                         <PackageCheck className="w-3.5 h-3.5 text-[#36D399]" />
                       )}
@@ -158,7 +158,7 @@ export const RecentActivityTable: React.FC<RecentActivityTableProps> = ({
                   <td className="py-3 px-4 text-right">
                     <Link
                       href={`/records/${encodeURIComponent(item.entityKey)}`}
-                      className="inline-flex items-center gap-1 text-xs text-[#00C8FF] hover:text-[#55E5FF] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs text-[#3b82f6] hover:text-[#60a5fa] hover:underline"
                     >
                       <span>Detail</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />

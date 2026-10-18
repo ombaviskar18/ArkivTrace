@@ -28,7 +28,7 @@ export const Card: React.FC<CardProps> = ({
       {...props}
     >
       {(title || headerAction) && (
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#00C8FF]/10">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#3b82f6]/15">
           <div>
             {title && (
               <h3 className="text-base font-semibold text-[#F1F8FC] tracking-wide">

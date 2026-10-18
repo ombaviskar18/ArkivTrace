@@ -84,7 +84,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
         <p className="text-xs text-[#91A9B7] max-w-sm mx-auto">
           Weighed quantity reconciled with depot consignment and logged to Arkiv:
         </p>
-        <div className="p-2.5 bg-[#06151D] border border-[#00C8FF]/30 rounded-lg text-xs font-mono text-[#55E5FF] break-all">
+        <div className="p-2.5 bg-[#06151D] border border-[#3b82f6]/30 rounded-lg text-xs font-mono text-[#60a5fa] break-all">
           {createdKey}
         </div>
       </div>
@@ -109,7 +109,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
             type="text"
             value={formData.deliveryId}
             onChange={(e) => setFormData({ ...formData, deliveryId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none font-mono"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none font-mono"
             placeholder="e.g. DEL-2026-9041"
             required
           />
@@ -121,7 +121,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
               Fair Price Shop ID *
             </label>
             {isOperator && operatorShopId && (
-              <span className="flex items-center gap-1 text-[10px] text-[#00C8FF] font-mono">
+              <span className="flex items-center gap-1 text-[10px] text-[#3b82f6] font-mono">
                 <Lock className="w-2.5 h-2.5" /> Authenticated Assignment
               </span>
             )}
@@ -133,8 +133,8 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
             disabled={isOperator && Boolean(operatorShopId)}
             className={`w-full px-3 py-2 text-xs bg-[#06151D] border rounded-lg text-[#F1F8FC] focus:outline-none ${
               isOperator && operatorShopId
-                ? 'border-[#00C8FF]/40 bg-[#071B25]/60 cursor-not-allowed text-[#55E5FF] font-mono'
-                : 'border-[#00C8FF]/20 focus:border-[#00C8FF]'
+                ? 'border-[#3b82f6]/40 bg-[#071B25]/60 cursor-not-allowed text-[#60a5fa] font-mono'
+                : 'border-[#3b82f6]/20 focus:border-[#3b82f6]'
             }`}
             placeholder="e.g. FPS-2041"
             required
@@ -148,7 +148,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
           <select
             value={formData.district}
             onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Raigad">Raigad</option>
             <option value="Pune Central">Pune Central</option>
@@ -170,7 +170,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
                 commodity: e.target.value as 'Wheat' | 'Rice' | 'Coarse Grains' | 'Pulses',
               })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Wheat">Wheat</option>
             <option value="Rice">Rice</option>
@@ -191,7 +191,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
             onChange={(e) =>
               setFormData({ ...formData, receivedQuantityKg: Number(e.target.value) })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. 9880"
             required
           />
@@ -209,7 +209,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
                 conditionStatus: e.target.value as 'Good' | 'Damaged Packaging' | 'Moisture Detected',
               })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Good">Good (Intact Seal & Dry)</option>
             <option value="Damaged Packaging">Damaged Packaging</option>
@@ -218,7 +218,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#00C8FF]/15">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#3b82f6]/15">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel

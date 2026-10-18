@@ -31,18 +31,18 @@ export const DispatchReceiptChart: React.FC<DispatchReceiptChartProps> = ({ data
         >
           <defs>
             <linearGradient id="cyanGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#00C8FF" stopOpacity={0.35} />
-              <stop offset="95%" stopColor="#00C8FF" stopOpacity={0.0} />
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35} />
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
             </linearGradient>
             <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#087DEB" stopOpacity={0.25} />
-              <stop offset="95%" stopColor="#087DEB" stopOpacity={0.0} />
+              <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+              <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
             </linearGradient>
           </defs>
 
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="rgba(0, 200, 255, 0.08)"
+            stroke="rgba(59, 130, 246,  0.08)"
             vertical={false}
           />
 
@@ -51,20 +51,20 @@ export const DispatchReceiptChart: React.FC<DispatchReceiptChartProps> = ({ data
             stroke="#607987"
             fontSize={11}
             tickLine={false}
-            axisLine={{ stroke: 'rgba(0, 200, 255, 0.15)' }}
+            axisLine={{ stroke: 'rgba(59, 130, 246,  0.15)' }}
           />
           <YAxis
             stroke="#607987"
             fontSize={11}
             tickLine={false}
-            axisLine={{ stroke: 'rgba(0, 200, 255, 0.15)' }}
+            axisLine={{ stroke: 'rgba(59, 130, 246,  0.15)' }}
             tickFormatter={(val) => `${(val / 1000).toFixed(0)}k`}
           />
 
           <Tooltip
             contentStyle={{
               backgroundColor: '#071B25',
-              borderColor: 'rgba(0, 200, 255, 0.3)',
+              borderColor: 'rgba(59, 130, 246,  0.3)',
               borderRadius: '8px',
               fontSize: '12px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
@@ -80,7 +80,7 @@ export const DispatchReceiptChart: React.FC<DispatchReceiptChartProps> = ({ data
           <Area
             type="monotone"
             dataKey="dispatchedKg"
-            stroke="#00C8FF"
+            stroke="#3b82f6"
             strokeWidth={2}
             fillOpacity={1}
             fill="url(#cyanGradient)"
@@ -89,7 +89,7 @@ export const DispatchReceiptChart: React.FC<DispatchReceiptChartProps> = ({ data
           <Area
             type="monotone"
             dataKey="receivedKg"
-            stroke="#087DEB"
+            stroke="#2563eb"
             strokeWidth={2}
             strokeDasharray="4 4"
             fillOpacity={1}

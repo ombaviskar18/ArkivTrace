@@ -30,7 +30,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="pb-2">
         <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-          Preferences & <span className="text-[#00C8FF]">Settings</span>
+          Preferences & <span className="text-[#3b82f6]">Settings</span>
         </h2>
         <p className="text-xs text-[#91A9B7] mt-1">
           Configure table display properties, inspect environment configuration, and manage demonstration datasets.
@@ -48,7 +48,7 @@ export default function SettingsPage() {
               <select
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="10">10 records per page</option>
                 <option value="25">25 records per page</option>
@@ -66,8 +66,8 @@ export default function SettingsPage() {
                   onClick={() => setDensity('comfortable')}
                   className={`p-2.5 rounded-lg border text-center font-medium transition-all ${
                     density === 'comfortable'
-                      ? 'bg-[#00C8FF]/15 border-[#00C8FF]/50 text-[#55E5FF]'
-                      : 'bg-[#06151D] border-[#00C8FF]/15 text-[#91A9B7]'
+                      ? 'bg-[#3b82f6]/15 border-[#3b82f6]/50 text-[#60a5fa]'
+                      : 'bg-[#06151D] border-[#3b82f6]/15 text-[#91A9B7]'
                   }`}
                 >
                   Comfortable
@@ -77,8 +77,8 @@ export default function SettingsPage() {
                   onClick={() => setDensity('compact')}
                   className={`p-2.5 rounded-lg border text-center font-medium transition-all ${
                     density === 'compact'
-                      ? 'bg-[#00C8FF]/15 border-[#00C8FF]/50 text-[#55E5FF]'
-                      : 'bg-[#06151D] border-[#00C8FF]/15 text-[#91A9B7]'
+                      ? 'bg-[#3b82f6]/15 border-[#3b82f6]/50 text-[#60a5fa]'
+                      : 'bg-[#06151D] border-[#3b82f6]/15 text-[#91A9B7]'
                   }`}
                 >
                   Compact
@@ -95,10 +95,10 @@ export default function SettingsPage() {
               ArkivTrace is currently running in synthetic demonstration mode with client-side persistence. You can reset the dataset back to its default seed values at any time.
             </p>
 
-            <div className="p-3.5 rounded-xl bg-[#06151D] border border-[#00C8FF]/20 space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#06151D] border border-[#3b82f6]/20 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#91A9B7]">Data Mode:</span>
-                <span className="font-semibold text-[#55E5FF]">Client LocalStorage Cache</span>
+                <span className="font-semibold text-[#60a5fa]">Client LocalStorage Cache</span>
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#91A9B7]">Network:</span>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
         <div className="md:col-span-2">
           <Card elevated title="Public Food Security Architecture Principles">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#91A9B7]">
-              <div className="p-4 rounded-xl bg-[#06151D] border border-[#00C8FF]/15">
+              <div className="p-4 rounded-xl bg-[#06151D] border border-[#3b82f6]/15">
                 <h5 className="font-bold text-[#F1F8FC] mb-1 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#36D399]" />
                   Zero Personal Data
@@ -137,9 +137,9 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#06151D] border border-[#00C8FF]/15">
+              <div className="p-4 rounded-xl bg-[#06151D] border border-[#3b82f6]/15">
                 <h5 className="font-bold text-[#F1F8FC] mb-1 flex items-center gap-1.5">
-                  <Database className="w-4 h-4 text-[#00C8FF]" />
+                  <Database className="w-4 h-4 text-[#3b82f6]" />
                   Secure Backend Signer
                 </h5>
                 <p className="leading-relaxed">
@@ -147,9 +147,9 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#06151D] border border-[#00C8FF]/15">
+              <div className="p-4 rounded-xl bg-[#06151D] border border-[#3b82f6]/15">
                 <h5 className="font-bold text-[#F1F8FC] mb-1 flex items-center gap-1.5">
-                  <Sliders className="w-4 h-4 text-[#55E5FF]" />
+                  <Sliders className="w-4 h-4 text-[#60a5fa]" />
                   Objective Variances
                 </h5>
                 <p className="leading-relaxed">

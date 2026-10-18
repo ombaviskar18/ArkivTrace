@@ -40,7 +40,7 @@ export const RecentDiscrepancies: React.FC<RecentDiscrepanciesProps> = ({
                 <span className="font-mono text-xs font-bold text-[#FB7185]">
                   {disc.caseId}
                 </span>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#071B25] border border-[#00C8FF]/20 text-[#91A9B7]">
+                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#071B25] border border-[#3b82f6]/20 text-[#91A9B7]">
                   {disc.category}
                 </span>
               </div>
@@ -62,7 +62,7 @@ export const RecentDiscrepancies: React.FC<RecentDiscrepanciesProps> = ({
 
           <Link
             href="/discrepancies"
-            className="p-2 text-[#91A9B7] group-hover:text-[#55E5FF] group-hover:bg-[#00C8FF]/10 rounded-lg transition-colors shrink-0"
+            className="p-2 text-[#91A9B7] group-hover:text-[#60a5fa] group-hover:bg-[#3b82f6]/10 rounded-lg transition-colors shrink-0"
             title="Investigate discrepancy case"
           >
             <ArrowRight className="w-4 h-4" />
@@ -73,7 +73,7 @@ export const RecentDiscrepancies: React.FC<RecentDiscrepanciesProps> = ({
       <div className="pt-2 text-right">
         <Link
           href="/discrepancies"
-          className="text-xs font-semibold text-[#00C8FF] hover:text-[#55E5FF] hover:underline inline-flex items-center gap-1"
+          className="text-xs font-semibold text-[#3b82f6] hover:text-[#60a5fa] hover:underline inline-flex items-center gap-1"
         >
           <span>View All Discrepancy Audits</span>
           <ArrowRight className="w-3.5 h-3.5" />

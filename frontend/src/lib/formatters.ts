@@ -66,8 +66,8 @@ export function getStatusBadgeProps(status: ReconciliationStatus): {
     default:
       return {
         label: 'Pending',
-        className: 'bg-[#00C8FF]/10 text-[#55E5FF]',
-        borderClass: 'border-[#00C8FF]/30',
+        className: 'bg-[#3b82f6]/10 text-[#60a5fa]',
+        borderClass: 'border-[#3b82f6]/30',
       };
   }
 }
@@ -87,8 +87,8 @@ export function getVerificationBadgeProps(status: VerificationStatus): {
     case 'Recorded':
       return {
         label: 'Recorded (Unverified)',
-        className: 'bg-[#00C8FF]/10 text-[#00C8FF] border-[#00C8FF]/30',
-        dotColor: 'bg-[#00C8FF]',
+        className: 'bg-[#3b82f6]/10 text-[#3b82f6] border-[#3b82f6]/30',
+        dotColor: 'bg-[#3b82f6]',
       };
     case 'Pending':
       return {
@@ -99,8 +99,8 @@ export function getVerificationBadgeProps(status: VerificationStatus): {
     case 'Demo Data':
       return {
         label: 'DEMO DATA',
-        className: 'bg-[#087DEB]/20 text-[#55E5FF] border-[#00C8FF]/40',
-        dotColor: 'bg-[#00C8FF] animate-pulse',
+        className: 'bg-[#3b82f6]/20 text-[#60a5fa] border-[#3b82f6]/40',
+        dotColor: 'bg-[#3b82f6] animate-pulse',
       };
     case 'Unavailable':
     default:

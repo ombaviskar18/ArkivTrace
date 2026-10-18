@@ -30,8 +30,8 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   if (!isLoaded) {
     return (
       <div className="space-y-4 py-8">
-        <div className="flex items-center gap-2 text-xs text-[#00C8FF] animate-pulse mb-2">
-          <span className="w-2 h-2 rounded-full bg-[#00C8FF]" />
+        <div className="flex items-center gap-2 text-xs text-[#3b82f6] animate-pulse mb-2">
+          <span className="w-2 h-2 rounded-full bg-[#3b82f6]" />
           <span>Verifying cryptographic credentials with Clerk...</span>
         </div>
         <LoadingSkeleton rows={5} />
@@ -44,8 +44,8 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
     if (fallback) return <>{fallback}</>;
 
     return (
-      <Card elevated className="border-[#00C8FF]/20 text-center p-8 my-6">
-        <div className="w-12 h-12 mx-auto rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-center text-[#00C8FF] mb-4">
+      <Card elevated className="border-[#3b82f6]/20 text-center p-8 my-6">
+        <div className="w-12 h-12 mx-auto rounded-xl bg-[#2563eb]/15 border border-[#3b82f6]/30 flex items-center justify-center text-[#3b82f6] mb-4">
           <KeyRound className="w-6 h-6" />
         </div>
         <h3 className="text-lg font-bold text-[#F1F8FC] mb-2">
@@ -84,7 +84,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
           Insufficient Role Privileges
         </h3>
         <p className="text-xs text-[#91A9B7] max-w-md mx-auto mb-2">
-          Your current account has the role <strong className="text-[#55E5FF] uppercase font-mono">{role}</strong>.
+          Your current account has the role <strong className="text-[#60a5fa] uppercase font-mono">{role}</strong>.
           This section requires: <span className="font-mono text-[#F1F8FC]">{allowedRoles.join(', ')}</span>.
         </p>
         <div className="mt-5 flex justify-center gap-3">
@@ -111,7 +111,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
             Cross-Shop Scope Blocked
           </h3>
           <p className="text-xs text-[#91A9B7] max-w-md mx-auto mb-2">
-            You are authorized only for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'None'}</strong>.
+            You are authorized only for Fair Price Shop <strong className="text-[#60a5fa] font-mono">{shopId || 'None'}</strong>.
             Access to shop <strong className="text-[#FB7185] font-mono">{targetShopId}</strong> is denied.
           </p>
           <div className="mt-5 flex justify-center gap-3">

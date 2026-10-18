@@ -66,14 +66,14 @@ export default function DispatchesPage() {
       <RoleGuard allowedRoles={['admin', 'operator']}>
         {/* Operator scope notification banner */}
         {isOperator && (
-          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+          <div className="mb-4 p-3 rounded-xl bg-[#2563eb]/15 border border-[#3b82f6]/30 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <Store className="w-4 h-4 text-[#3b82f6]" />
               <span className="text-[#F1F8FC]">
-                Dealer Filter: Displaying incoming consignments for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+                Dealer Filter: Displaying incoming consignments for Fair Price Shop <strong className="text-[#60a5fa] font-mono">{shopId || 'Assigned Shop'}</strong>
               </span>
             </div>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/30 font-bold">
               Operator View
             </span>
           </div>
@@ -84,9 +84,9 @@ export default function DispatchesPage() {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-                Depot <span className="text-[#00C8FF]">Dispatches</span>
+                Depot <span className="text-[#3b82f6]">Dispatches</span>
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/30">
                 {visibleDispatches.length} Consignments
               </span>
             </div>
@@ -104,8 +104,8 @@ export default function DispatchesPage() {
               Create Dispatch
             </Button>
           ) : (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#06151D] border border-[#00C8FF]/20 text-xs text-[#91A9B7]">
-              <Shield className="w-3.5 h-3.5 text-[#00C8FF]" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#06151D] border border-[#3b82f6]/20 text-xs text-[#91A9B7]">
+              <Shield className="w-3.5 h-3.5 text-[#3b82f6]" />
               <span>Officer Authority Required for Outbound Dispatches</span>
             </div>
           )}
@@ -121,18 +121,18 @@ export default function DispatchesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by delivery ID, depot ID, shop ID, or depot name..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#00C8FF] focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#3b82f6] focus:outline-none"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 text-xs text-[#91A9B7]">
-              <Filter className="w-3.5 h-3.5 text-[#00C8FF]" />
+              <Filter className="w-3.5 h-3.5 text-[#3b82f6]" />
               <span>District:</span>
               <select
                 value={districtFilter}
                 onChange={(e) => setDistrictFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Districts</option>
                 <option value="Raigad">Raigad</option>
@@ -147,7 +147,7 @@ export default function DispatchesPage() {
               <select
                 value={periodFilter}
                 onChange={(e) => setPeriodFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Cycles</option>
                 <option value="October 2026">October 2026</option>
@@ -175,10 +175,10 @@ export default function DispatchesPage() {
             onAction={isAdmin ? () => setIsModalOpen(true) : undefined}
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-[#00C8FF]/15">
+          <div className="overflow-x-auto rounded-xl border border-[#3b82f6]/15">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#06151D] border-b border-[#00C8FF]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
+                <tr className="bg-[#06151D] border-b border-[#3b82f6]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
                   <th className="py-3 px-4">Delivery ID</th>
                   <th className="py-3 px-4">Depot Origin</th>
                   <th className="py-3 px-4">Dest. Shop</th>
@@ -191,13 +191,13 @@ export default function DispatchesPage() {
                   <th className="py-3 px-4 text-right">Inspect</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#00C8FF]/10">
+              <tbody className="divide-y divide-[#3b82f6]/10">
                 {visibleDispatches.map((disp) => (
                   <tr
                     key={disp.id}
                     className="hover:bg-[#071B25]/80 transition-colors group"
                   >
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#55E5FF]">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#60a5fa]">
                       {disp.deliveryId}
                     </td>
                     <td className="py-3.5 px-4">
@@ -211,7 +211,7 @@ export default function DispatchesPage() {
                     <td className="py-3.5 px-4">
                       <Link
                         href={`/shops/${disp.destinationShopId}`}
-                        className="text-[#00C8FF] hover:text-[#55E5FF] font-semibold hover:underline inline-flex items-center gap-1"
+                        className="text-[#3b82f6] hover:text-[#60a5fa] font-semibold hover:underline inline-flex items-center gap-1"
                       >
                         <span>{disp.destinationShopId}</span>
                         <ExternalLink className="w-3 h-3" />
@@ -233,7 +233,7 @@ export default function DispatchesPage() {
                       <div className="text-[11px] font-mono text-[#F1F8FC]">
                         {disp.truckNumber || '—'}
                       </div>
-                      <div className="text-[10px] font-mono text-[#00C8FF]/80">
+                      <div className="text-[10px] font-mono text-[#3b82f6]/80">
                         {disp.sealNumber || '—'}
                       </div>
                     </td>
@@ -251,7 +251,7 @@ export default function DispatchesPage() {
                     <td className="py-3.5 px-4 text-right">
                       <Link
                         href={`/records/${encodeURIComponent(disp.entityKey)}`}
-                        className="inline-flex items-center gap-1 text-xs text-[#00C8FF] hover:text-[#55E5FF] hover:underline"
+                        className="inline-flex items-center gap-1 text-xs text-[#3b82f6] hover:text-[#60a5fa] hover:underline"
                       >
                         <span>Evidence</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />

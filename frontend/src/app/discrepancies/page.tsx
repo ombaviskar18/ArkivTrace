@@ -74,14 +74,14 @@ export default function DiscrepanciesPage() {
       <RoleGuard allowedRoles={['admin', 'operator', 'public']}>
         {/* Operator scope notification banner */}
         {isOperator && (
-          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+          <div className="mb-4 p-3 rounded-xl bg-[#2563eb]/15 border border-[#3b82f6]/30 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <Store className="w-4 h-4 text-[#3b82f6]" />
               <span className="text-[#F1F8FC]">
-                Dealer Scoped: Displaying audit cases involving Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+                Dealer Scoped: Displaying audit cases involving Fair Price Shop <strong className="text-[#60a5fa] font-mono">{shopId || 'Assigned Shop'}</strong>
               </span>
             </div>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/30 font-bold">
               Shop Scope
             </span>
           </div>
@@ -113,7 +113,7 @@ export default function DiscrepanciesPage() {
 
       {/* Case Metrics Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl glass-panel border border-[#00C8FF]/20">
+        <div className="p-4 rounded-xl glass-panel border border-[#3b82f6]/20">
           <span className="text-[11px] font-semibold text-[#91A9B7] uppercase tracking-wider">
             Total Cases
           </span>
@@ -164,18 +164,18 @@ export default function DiscrepanciesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by Case ID, delivery ID, or shop ID..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#00C8FF] focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#3b82f6] focus:outline-none"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 text-xs text-[#91A9B7]">
-              <Filter className="w-3.5 h-3.5 text-[#00C8FF]" />
+              <Filter className="w-3.5 h-3.5 text-[#3b82f6]" />
               <span>Category:</span>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Categories</option>
                 <option value="Transit Loss">Transit Loss</option>
@@ -190,7 +190,7 @@ export default function DiscrepanciesPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Statuses</option>
                 <option value="Open">Open</option>
@@ -219,10 +219,10 @@ export default function DiscrepanciesPage() {
             onAction={() => setIsModalOpen(true)}
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-[#00C8FF]/15">
+          <div className="overflow-x-auto rounded-xl border border-[#3b82f6]/15">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#06151D] border-b border-[#00C8FF]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
+                <tr className="bg-[#06151D] border-b border-[#3b82f6]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
                   <th className="py-3 px-4">Case ID</th>
                   <th className="py-3 px-4">Entity Reference</th>
                   <th className="py-3 px-4">Category</th>
@@ -233,7 +233,7 @@ export default function DiscrepanciesPage() {
                   <th className="py-3 px-4 text-right">Case Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#00C8FF]/10">
+              <tbody className="divide-y divide-[#3b82f6]/10">
                 {visibleDiscrepancies.map((disc) => (
                   <tr
                     key={disc.id}
@@ -245,7 +245,7 @@ export default function DiscrepanciesPage() {
                     </td>
                     <td className="py-3.5 px-4">
                       {disc.relatedDeliveryId && (
-                        <div className="font-mono text-[#55E5FF] font-semibold">
+                        <div className="font-mono text-[#60a5fa] font-semibold">
                           {disc.relatedDeliveryId}
                         </div>
                       )}
@@ -254,7 +254,7 @@ export default function DiscrepanciesPage() {
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#071B25] border border-[#00C8FF]/20 text-[#91A9B7]">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#071B25] border border-[#3b82f6]/20 text-[#91A9B7]">
                         {disc.category}
                       </span>
                     </td>
@@ -266,7 +266,7 @@ export default function DiscrepanciesPage() {
                           </span>
                           <span className="text-[#607987]">→</span>
                           <span className="text-[#91A9B7]">
-                            Rcpt: <strong className="text-[#55E5FF]">{disc.receivedQuantityKg.toLocaleString()}</strong> kg
+                            Rcpt: <strong className="text-[#60a5fa]">{disc.receivedQuantityKg.toLocaleString()}</strong> kg
                           </span>
                         </div>
                       ) : (
@@ -300,7 +300,7 @@ export default function DiscrepanciesPage() {
                           e.stopPropagation();
                           setSelectedCase(disc);
                         }}
-                        className="inline-flex items-center gap-1 text-xs text-[#00C8FF] hover:text-[#55E5FF] hover:underline"
+                        className="inline-flex items-center gap-1 text-xs text-[#3b82f6] hover:text-[#60a5fa] hover:underline"
                       >
                         <span>Investigate</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />
@@ -331,7 +331,7 @@ export default function DiscrepanciesPage() {
               </span>
 
               <div className="grid grid-cols-3 gap-2 text-center py-2">
-                <div className="p-3 rounded-lg bg-[#071B25] border border-[#00C8FF]/20">
+                <div className="p-3 rounded-lg bg-[#071B25] border border-[#3b82f6]/20">
                   <div className="text-[11px] text-[#91A9B7]">Dispatched Weight</div>
                   <div className="text-base font-bold text-[#F1F8FC] mt-1">
                     {selectedCase.dispatchedQuantityKg
@@ -340,9 +340,9 @@ export default function DiscrepanciesPage() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#071B25] border border-[#00C8FF]/20">
+                <div className="p-3 rounded-lg bg-[#071B25] border border-[#3b82f6]/20">
                   <div className="text-[11px] text-[#91A9B7]">Shop Weighed</div>
-                  <div className="text-base font-bold text-[#55E5FF] mt-1">
+                  <div className="text-base font-bold text-[#60a5fa] mt-1">
                     {selectedCase.receivedQuantityKg
                       ? formatSimpleKg(selectedCase.receivedQuantityKg)
                       : 'N/A'}
@@ -367,7 +367,7 @@ export default function DiscrepanciesPage() {
               <span className="text-xs font-semibold text-[#91A9B7] block mb-1">
                 Factual Narrative
               </span>
-              <p className="p-3 rounded-lg bg-[#06151D] border border-[#00C8FF]/20 text-xs text-[#F1F8FC] leading-relaxed">
+              <p className="p-3 rounded-lg bg-[#06151D] border border-[#3b82f6]/20 text-xs text-[#F1F8FC] leading-relaxed">
                 {selectedCase.description}
               </p>
             </div>
@@ -389,18 +389,18 @@ export default function DiscrepanciesPage() {
               <span className="text-xs font-semibold text-[#91A9B7] block mb-1">
                 Arkiv Immutable Entity Key
               </span>
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[#06151D] border border-[#00C8FF]/20">
-                <span className="font-mono text-xs text-[#55E5FF] break-all flex-1">
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[#06151D] border border-[#3b82f6]/20">
+                <span className="font-mono text-xs text-[#60a5fa] break-all flex-1">
                   {selectedCase.entityKey}
                 </span>
                 <CopyButton textToCopy={selectedCase.entityKey} />
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-[#00C8FF]/15">
+            <div className="flex items-center justify-between pt-3 border-t border-[#3b82f6]/15">
               <Link
                 href={`/records/${encodeURIComponent(selectedCase.entityKey)}`}
-                className="text-xs text-[#00C8FF] hover:underline inline-flex items-center gap-1 font-semibold"
+                className="text-xs text-[#3b82f6] hover:underline inline-flex items-center gap-1 font-semibold"
               >
                 <span>View Full On-Chain Payload</span>
                 <ArrowRight className="w-3.5 h-3.5" />
