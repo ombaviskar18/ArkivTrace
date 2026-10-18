@@ -21,6 +21,8 @@ However, the system faces severe systemic challenges:
 
 **ArkivTrace** uses **Arkiv as an append-only, queryable Web3 data layer**. Depot dispatches, shop receipts, monthly stock balances, and discrepancy cases are stored as indexed entities with type-specific expiration (180 or 365 days). Citizens and shop operators can inspect evidence through the portal and Telegram bot without requiring crypto wallets or paying gas fees.
 
+---
+
 ## 💡 Why Arkiv? (Why Not Postgres, IPFS, or Subgraphs?)
 
 | Technology | What Breaks if Used Instead of Arkiv? |
