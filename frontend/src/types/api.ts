@@ -234,3 +234,22 @@ export interface CreateDiscrepancyInput {
   description: string;
   reportedQuantityDiffKg?: number;
 }
+
+
+export interface CreateShopInput {
+  shopId: string;
+  name: string;
+  operatorName: string;
+  operatorAddress?: string;
+  district: string;
+  state: string;
+  address: string;
+  allocatedBeneficiaries: number;
+  monthlyQuotaKg?: {
+    wheat?: number;
+    rice?: number;
+    coarseGrains?: number;
+  };
+  status?: 'active' | 'suspended' | 'inactive';
+}
+

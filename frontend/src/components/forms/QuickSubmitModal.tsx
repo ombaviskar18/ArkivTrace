@@ -4,7 +4,8 @@ import { DispatchForm } from './DispatchForm';
 import { ReceiptForm } from './ReceiptForm';
 import { StockReportForm } from './StockReportForm';
 import { DiscrepancyForm } from './DiscrepancyForm';
-import { Truck, PackageCheck, Warehouse, AlertTriangle, Lock } from 'lucide-react';
+import { ShopForm } from './ShopForm';
+import { Truck, PackageCheck, Warehouse, AlertTriangle, Store, Lock } from 'lucide-react';
 import { useUserRole } from '@/lib/auth';
 
 interface QuickSubmitModalProps {
@@ -20,7 +21,7 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
 }) => {
   const { role, isAdmin, isOperator, shopId } = useUserRole();
 
-  const [activeTab, setActiveTab] = useState<'dispatch' | 'receipt' | 'stock' | 'discrepancy'>(
+  const [activeTab, setActiveTab] = useState<'dispatch' | 'receipt' | 'stock' | 'discrepancy' | 'shop'>(
     isAdmin ? 'dispatch' : isOperator ? 'receipt' : 'discrepancy'
   );
 
@@ -31,6 +32,12 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
   }, [isAdmin, isOperator, isOpen]);
 
   const allTabs = [
+    {
+      id: 'shop',
+      label: 'Register Shop',
+      icon: <Store className="w-3.5 h-3.5" />,
+      allowedRoles: ['admin'],
+    },
     {
       id: 'dispatch',
       label: 'Depot Dispatch',
@@ -98,6 +105,9 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
 
       {/* Tab Content */}
       <div className="pt-1">
+        {activeTab === 'shop' && (
+          <ShopForm onSuccess={handleSuccess} onCancel={onClose} />
+        )}
         {activeTab === 'dispatch' && (
           <DispatchForm onSuccess={handleSuccess} onCancel={onClose} />
         )}

@@ -8,6 +8,7 @@ import {
   ShopTimelineEvent,
   NetworkStatus,
   CreateDispatchInput,
+  CreateShopInput,
   CreateReceiptInput,
   CreateStockReportInput,
   CreateDiscrepancyInput,
@@ -1178,6 +1179,55 @@ export const api = {
     if (!res.ok || !json.success) {
       throw new Error(json.message || 'Failed to fetch Telegram link status');
     }
+    return json.data;
+  },
+
+  /**
+   * POST /api/v1/shops (Admin only)
+   */
+  async createShop(input: CreateShopInput): Promise<{
+    entityKey: string;
+    txHash: string;
+    shopId: string;
+    explorerUrl: string;
+  }> {
+    const payload = {
+      shopId: input.shopId.trim().toUpperCase(),
+      name: input.name.trim(),
+      operatorName: input.operatorName.trim(),
+      operatorAddress: input.operatorAddress?.trim() || '0x1234567890123456789012345678901234567890',
+      district: input.district.trim(),
+      state: input.state.trim(),
+      address: input.address.trim(),
+      allocatedBeneficiaries: Number(input.allocatedBeneficiaries),
+      monthlyQuotaKg: {
+        wheat: Number(input.monthlyQuotaKg?.wheat || 0),
+        rice: Number(input.monthlyQuotaKg?.rice || 0),
+        coarseGrains: Number(input.monthlyQuotaKg?.coarseGrains || 0),
+      },
+      status: input.status || 'active',
+    };
+
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE_URL}/shops`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+
+    if (res.status === 401) {
+      throw new Error('Authentication required (401). Please sign in as an Admin.');
+    }
+    if (res.status === 403) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || 'Access Denied (403): Only Supply Chain Admins can register new shops.');
+    }
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || `Failed to create shop (HTTP ${res.status})`);
+    }
+
+    const json = await res.json();
     return json.data;
   },
 

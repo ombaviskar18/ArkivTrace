@@ -9,6 +9,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { Modal } from '@/components/ui/Modal';
 import { ReceiptForm } from '@/components/forms/ReceiptForm';
+import { ShopForm } from '@/components/forms/ShopForm';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { api } from '@/lib/api';
@@ -36,6 +37,7 @@ export default function ShopReceiptsPage() {
   const [districtFilter, setDistrictFilter] = useState('All');
   const [periodFilter, setPeriodFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
   const loadData = async () => {
     try {
@@ -95,13 +97,24 @@ export default function ShopReceiptsPage() {
             </p>
           </div>
 
-          <Button
-            variant="primary"
-            onClick={() => setIsModalOpen(true)}
-            icon={<Plus className="w-4 h-4" />}
-          >
-            Acknowledge Receipt
-          </Button>
+          <div className="flex items-center gap-2.5">
+            {isAdmin && (
+              <Button
+                variant="secondary"
+                onClick={() => setIsShopModalOpen(true)}
+                icon={<Store className="w-4 h-4 text-[#00C8FF]" />}
+              >
+                Register Shop
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              onClick={() => setIsModalOpen(true)}
+              icon={<Plus className="w-4 h-4" />}
+            >
+              Acknowledge Receipt
+            </Button>
+          </div>
         </div>
 
       {/* Filter and Search Bar */}
@@ -286,6 +299,23 @@ export default function ShopReceiptsPage() {
             loadData();
           }}
           onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+
+      {/* Register Shop Modal (Admin Only) */}
+      <Modal
+        isOpen={isShopModalOpen}
+        onClose={() => setIsShopModalOpen(false)}
+        title="Register Fair Price Shop on Arkiv"
+        subtitle="Authorize a new ration shop entity and anchor allocation quotas on Arkiv Tiramisu"
+        maxWidth="xl"
+      >
+        <ShopForm
+          onSuccess={() => {
+            setIsShopModalOpen(false);
+            loadData();
+          }}
+          onCancel={() => setIsShopModalOpen(false)}
         />
       </Modal>
       </RoleGuard>

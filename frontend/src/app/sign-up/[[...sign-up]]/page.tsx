@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SignUp } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
+// import { dark } from '@clerk/themes';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
@@ -52,7 +52,7 @@ export default function SignUpPage() {
           signInUrl="/sign-in"
           fallbackRedirectUrl="/"
           appearance={{
-            theme: dark,
+
             variables: {
               colorPrimary: '#3b82f6',
               colorPrimaryForeground: '#FFFFFF',

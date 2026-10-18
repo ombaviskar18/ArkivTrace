@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Search, Plus, Menu, ShieldCheck, Store, LogIn, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { UserButton } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
+// import { dark } from '@clerk/themes';
 import { useUserRole } from '@/lib/auth';
 
 interface TopbarProps {
@@ -147,7 +147,7 @@ export const Topbar: React.FC<TopbarProps> = ({
             <div className="p-0.5 rounded-full border border-[#3b82f6]/30 hover:border-[#3b82f6] transition-all flex items-center justify-center">
               <UserButton
                 appearance={{
-                  theme: dark,
+
                   variables: {
                     colorPrimary: '#3b82f6',
                     colorPrimaryForeground: '#FFFFFF',
