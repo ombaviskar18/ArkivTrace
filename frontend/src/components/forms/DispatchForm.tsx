@@ -75,7 +75,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
         <p className="text-xs text-[#91A9B7] max-w-sm mx-auto">
           Consignment anchored with synthetic Arkiv evidence key:
         </p>
-        <div className="p-2.5 bg-[#06151D] border border-[#00C8FF]/30 rounded-lg text-xs font-mono text-[#55E5FF] break-all">
+        <div className="p-2.5 bg-[#06151D] border border-[#3b82f6]/30 rounded-lg text-xs font-mono text-[#60a5fa] break-all">
           {createdKey}
         </div>
       </div>
@@ -110,7 +110,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             type="text"
             value={formData.deliveryId}
             onChange={(e) => setFormData({ ...formData, deliveryId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. DEL-2026-9041"
             required
           />
@@ -124,7 +124,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             type="text"
             value={formData.depotId}
             onChange={(e) => setFormData({ ...formData, depotId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. DEP-FCI-04"
             required
           />
@@ -138,7 +138,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             type="text"
             value={formData.destinationShopId}
             onChange={(e) => setFormData({ ...formData, destinationShopId: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. FPS-2041"
             required
           />
@@ -151,7 +151,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
           <select
             value={formData.district}
             onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Raigad">Raigad</option>
             <option value="Pune Central">Pune Central</option>
@@ -173,7 +173,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
                 commodity: e.target.value as 'Wheat' | 'Rice' | 'Coarse Grains' | 'Pulses',
               })
             }
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
           >
             <option value="Wheat">Wheat</option>
             <option value="Rice">Rice</option>
@@ -192,7 +192,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             step="10"
             value={formData.quantityKg}
             onChange={(e) => setFormData({ ...formData, quantityKg: Number(e.target.value) })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. 10000"
             required
           />
@@ -206,7 +206,7 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             type="text"
             value={formData.truckNumber}
             onChange={(e) => setFormData({ ...formData, truckNumber: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. MH-06-BW-4821"
           />
         </div>
@@ -219,13 +219,13 @@ export const DispatchForm: React.FC<DispatchFormProps> = ({ onSuccess, onCancel 
             type="text"
             value={formData.sealNumber}
             onChange={(e) => setFormData({ ...formData, sealNumber: e.target.value })}
-            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
             placeholder="e.g. SEAL-ARK-9812"
           />
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#00C8FF]/15">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#3b82f6]/15">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel

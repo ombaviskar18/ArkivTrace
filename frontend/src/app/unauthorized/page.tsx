@@ -34,16 +34,16 @@ export default function UnauthorizedPage() {
           </p>
 
           {/* Current Identity Details Box */}
-          <div className="p-4 rounded-xl bg-[#06151D] border border-[#00C8FF]/15 text-left max-w-md mx-auto mb-6 text-xs space-y-2">
-            <div className="flex items-center justify-between pb-2 border-b border-[#00C8FF]/10">
+          <div className="p-4 rounded-xl bg-[#06151D] border border-[#3b82f6]/15 text-left max-w-md mx-auto mb-6 text-xs space-y-2">
+            <div className="flex items-center justify-between pb-2 border-b border-[#3b82f6]/10">
               <span className="text-[#607987]">Current Session:</span>
               <span className="font-semibold text-[#F1F8FC]">
                 {isSignedIn ? userName || userEmail : 'Unauthenticated (Public)'}
               </span>
             </div>
-            <div className="flex items-center justify-between pb-2 border-b border-[#00C8FF]/10">
+            <div className="flex items-center justify-between pb-2 border-b border-[#3b82f6]/10">
               <span className="text-[#607987]">Assigned Role:</span>
-              <span className="font-mono uppercase font-bold text-[#55E5FF]">
+              <span className="font-mono uppercase font-bold text-[#60a5fa]">
                 {role}
               </span>
             </div>

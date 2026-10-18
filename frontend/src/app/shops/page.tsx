@@ -66,14 +66,14 @@ export default function ShopReceiptsPage() {
       <RoleGuard allowedRoles={['admin', 'operator']}>
         {/* Operator scope notification banner */}
         {isOperator && (
-          <div className="mb-4 p-3 rounded-xl bg-[#087DEB]/15 border border-[#00C8FF]/30 flex items-center justify-between text-xs">
+          <div className="mb-4 p-3 rounded-xl bg-[#2563eb]/15 border border-[#3b82f6]/30 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-[#00C8FF]" />
+              <Store className="w-4 h-4 text-[#3b82f6]" />
               <span className="text-[#F1F8FC]">
-                Dealer Scoped: Displaying receipts acknowledged for Fair Price Shop <strong className="text-[#55E5FF] font-mono">{shopId || 'Assigned Shop'}</strong>
+                Dealer Scoped: Displaying receipts acknowledged for Fair Price Shop <strong className="text-[#60a5fa] font-mono">{shopId || 'Assigned Shop'}</strong>
               </span>
             </div>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/30 font-bold">
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/30 font-bold">
               Shop Scope
             </span>
           </div>
@@ -84,7 +84,7 @@ export default function ShopReceiptsPage() {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl sm:text-2xl font-extrabold text-[#F1F8FC]">
-                Shop <span className="text-[#00C8FF]">Receipts</span>
+                Shop <span className="text-[#3b82f6]">Receipts</span>
               </h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#36D399]/15 text-[#36D399] border border-[#36D399]/30">
                 {visibleReceipts.length} Acknowledged Deliveries
@@ -114,18 +114,18 @@ export default function ShopReceiptsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by shop ID, delivery ID, or shop name..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#00C8FF] focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] placeholder-[#607987] focus:border-[#3b82f6] focus:outline-none"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 text-xs text-[#91A9B7]">
-              <Filter className="w-3.5 h-3.5 text-[#00C8FF]" />
+              <Filter className="w-3.5 h-3.5 text-[#3b82f6]" />
               <span>District:</span>
               <select
                 value={districtFilter}
                 onChange={(e) => setDistrictFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Districts</option>
                 <option value="Raigad">Raigad</option>
@@ -140,7 +140,7 @@ export default function ShopReceiptsPage() {
               <select
                 value={periodFilter}
                 onChange={(e) => setPeriodFilter(e.target.value)}
-                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+                className="px-2.5 py-1.5 text-xs bg-[#06151D] border border-[#3b82f6]/20 rounded-lg text-[#F1F8FC] focus:border-[#3b82f6] focus:outline-none"
               >
                 <option value="All">All Cycles</option>
                 <option value="October 2026">October 2026</option>
@@ -168,10 +168,10 @@ export default function ShopReceiptsPage() {
             onAction={() => setIsModalOpen(true)}
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-[#00C8FF]/15">
+          <div className="overflow-x-auto rounded-xl border border-[#3b82f6]/15">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#06151D] border-b border-[#00C8FF]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
+                <tr className="bg-[#06151D] border-b border-[#3b82f6]/15 text-[#91A9B7] uppercase tracking-wider font-semibold">
                   <th className="py-3 px-4">Fair Price Shop</th>
                   <th className="py-3 px-4">Delivery Consignment</th>
                   <th className="py-3 px-4">Commodity</th>
@@ -184,7 +184,7 @@ export default function ShopReceiptsPage() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#00C8FF]/10">
+              <tbody className="divide-y divide-[#3b82f6]/10">
                 {visibleReceipts.map((rcpt) => (
                   <tr
                     key={rcpt.id}
@@ -193,16 +193,16 @@ export default function ShopReceiptsPage() {
                     <td className="py-3.5 px-4">
                       <Link
                         href={`/shops/${rcpt.shopId}`}
-                        className="text-[#00C8FF] hover:text-[#55E5FF] font-bold hover:underline inline-flex items-center gap-1 font-mono"
+                        className="text-[#3b82f6] hover:text-[#60a5fa] font-bold hover:underline inline-flex items-center gap-1 font-mono"
                       >
                         <span>{rcpt.shopId}</span>
-                        <History className="w-3 h-3 text-[#55E5FF]" />
+                        <History className="w-3 h-3 text-[#60a5fa]" />
                       </Link>
                       <div className="text-[11px] text-[#607987]">
                         {rcpt.shopName || rcpt.district}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-mono font-semibold text-[#55E5FF]">
+                    <td className="py-3.5 px-4 font-mono font-semibold text-[#60a5fa]">
                       {rcpt.deliveryId}
                       {rcpt.challanReference && (
                         <div className="text-[10px] text-[#607987]">
@@ -250,14 +250,14 @@ export default function ShopReceiptsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/shops/${rcpt.shopId}`}
-                          className="p-1 text-[#91A9B7] hover:text-[#55E5FF] hover:bg-[#00C8FF]/10 rounded"
+                          className="p-1 text-[#91A9B7] hover:text-[#60a5fa] hover:bg-[#3b82f6]/10 rounded"
                           title="View shop full timeline"
                         >
                           <History className="w-3.5 h-3.5" />
                         </Link>
                         <Link
                           href={`/records/${encodeURIComponent(rcpt.entityKey)}`}
-                          className="inline-flex items-center gap-0.5 text-xs text-[#00C8FF] hover:text-[#55E5FF] hover:underline"
+                          className="inline-flex items-center gap-0.5 text-xs text-[#3b82f6] hover:text-[#60a5fa] hover:underline"
                         >
                           <span>Proof</span>
                           <ArrowUpRight className="w-3.5 h-3.5" />

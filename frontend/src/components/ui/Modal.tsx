@@ -54,11 +54,11 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${widthClass} glass-panel-elevated rounded-2xl border border-[#00C8FF]/30 glow-cyan-sm shadow-2xl p-6 z-10 animate-fade-in my-8`}
+        className={`relative w-full ${widthClass} glass-panel-elevated rounded-2xl border border-[#3b82f6]/30 glow-cyan-sm shadow-2xl p-6 z-10 animate-fade-in my-8`}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-start justify-between pb-4 border-b border-[#00C8FF]/15">
+        <div className="flex items-start justify-between pb-4 border-b border-[#3b82f6]/20">
           <div>
             <h3 className="text-lg font-bold text-[#F1F8FC] tracking-wide">
               {title}
@@ -69,7 +69,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-[#91A9B7] hover:text-[#55E5FF] hover:bg-[#00C8FF]/10 rounded-lg transition-colors focus:outline-none"
+            className="p-1.5 text-[#91A9B7] hover:text-[#60a5fa] hover:bg-[#3b82f6]/10 rounded-lg transition-colors focus:outline-none"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />

@@ -79,14 +79,14 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
       maxWidth="2xl"
     >
       {/* Tab Selector */}
-      <div className="flex border-b border-[#00C8FF]/15 gap-2 mb-5 overflow-x-auto pb-1">
+      <div className="flex border-b border-[#3b82f6]/15 gap-2 mb-5 overflow-x-auto pb-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               activeTab === tab.id
-                ? 'bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/40 shadow-[0_0_12px_rgba(0,200,255,0.2)]'
+                ? 'bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/40 shadow-[0_0_12px_rgba(59, 130, 246, 0.2)]'
                 : 'text-[#91A9B7] hover:text-[#F1F8FC] hover:bg-[#071B25]'
             }`}
           >

@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -28,8 +29,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       label: 'OVERVIEW',
       items: [
         {
-          name: 'Dashboard',
+          name: 'Home',
           href: '/',
+          icon: <Activity className="w-4 h-4" />,
+          roles: ['admin', 'operator', 'public'],
+        },
+        {
+          name: 'Dashboard',
+          href: '/dashboard',
           icon: <LayoutDashboard className="w-4 h-4" />,
           roles: ['admin', 'operator'],
         },
@@ -104,53 +111,34 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     .filter((group) => group.items.length > 0);
 
   return (
-    <aside className="w-64 shrink-0 bg-[#041017] border-r border-[#00C8FF]/15 flex flex-col h-screen sticky top-0 select-none z-30">
+    <aside className="w-64 shrink-0 bg-[#041017] border-r border-[#3b82f6]/20 flex flex-col h-screen sticky top-0 select-none z-30">
       {/* Brand Header */}
-      <div className="p-5 border-b border-[#00C8FF]/15">
+      <div className="p-5 border-b border-[#3b82f6]/20">
         <Link
           href="/"
           onClick={onCloseMobile}
           className="flex items-center gap-3 group"
         >
-          {/* Futuristic Grain + Blockchain Node Logo */}
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#00C8FF] to-[#087DEB] flex items-center justify-center p-0.5 shadow-[0_0_15px_rgba(0,200,255,0.4)] group-hover:shadow-[0_0_25px_rgba(0,200,255,0.6)] transition-all">
-            <div className="w-full h-full bg-[#041017] rounded-[10px] flex items-center justify-center">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                className="w-5 h-5 text-[#00C8FF] drop-shadow-[0_0_8px_rgba(0,200,255,0.8)]"
-              >
-                {/* Grain Kernel Node */}
-                <path
-                  d="M12 2C8 6 6 10 6 15C6 18.5 8.5 21 12 21C15.5 21 18 18.5 18 15C18 10 16 6 12 2Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 2V21"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeDasharray="2 2"
-                />
-                {/* Connected Network Nodes */}
-                <circle cx="12" cy="7" r="1.5" fill="#55E5FF" />
-                <circle cx="12" cy="14" r="1.5" fill="#55E5FF" />
-                <circle cx="9" cy="11" r="1" fill="#00C8FF" />
-                <circle cx="15" cy="11" r="1" fill="#00C8FF" />
-              </svg>
-            </div>
+          {/* Official ArkivTrace Logo */}
+          <div className="relative w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center p-0.5 bg-gradient-to-br from-[#3b82f6]/20 to-[#2563eb]/20 border border-[#3b82f6]/30 shadow-[0_0_15px_rgba(59,130,246,0.35)] group-hover:border-[#3b82f6]/60 group-hover:shadow-[0_0_25px_rgba(59,130,246,0.55)] transition-all">
+            <Image
+              src="/images/logo.png"
+              alt="ArkivTrace Logo"
+              width={40}
+              height={40}
+              className="w-full h-full object-contain rounded-lg"
+              priority
+            />
           </div>
 
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-lg font-bold tracking-tight text-[#F1F8FC] group-hover:text-[#55E5FF] transition-colors">
-                Arkiv<span className="text-[#00C8FF]">Trace</span>
+              <span className="text-lg font-bold tracking-tight text-[#F1F8FC] group-hover:text-[#60a5fa] transition-colors">
+                Arkiv<span className="text-[#3b82f6]">Trace</span>
               </span>
             </div>
-            <p className="text-[9px] tracking-wider font-semibold text-[#00C8FF]/80 uppercase">
-              Distribution Intel
+            <p className="text-[9px] tracking-wider font-semibold text-[#3b82f6]/90 uppercase">
+              Transparent Records 
             </p>
           </div>
         </Link>
@@ -177,7 +165,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
                     onClick={onCloseMobile}
                     className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all group ${
                       isActive
-                        ? 'bg-[#00C8FF]/15 text-[#55E5FF] border border-[#00C8FF]/40 shadow-[0_0_15px_rgba(0,200,255,0.15)]'
+                        ? 'bg-[#3b82f6]/15 text-[#60a5fa] border border-[#3b82f6]/40 shadow-[0_0_15px_rgba(59,130,246,0.15)]'
                         : 'text-[#91A9B7] hover:text-[#F1F8FC] hover:bg-[#071B25]'
                     }`}
                   >
@@ -185,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
                       <span
                         className={`transition-colors ${
                           isActive
-                            ? 'text-[#00C8FF] drop-shadow-[0_0_6px_rgba(0,200,255,0.7)]'
+                            ? 'text-[#3b82f6] drop-shadow-[0_0_6px_rgba(59,130,246,0.7)]'
                             : 'text-[#607987] group-hover:text-[#91A9B7]'
                         }`}
                       >
@@ -194,7 +182,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
                       <span>{item.name}</span>
                     </div>
                     {isActive && (
-                      <ChevronRight className="w-3.5 h-3.5 text-[#00C8FF]" />
+                      <ChevronRight className="w-3.5 h-3.5 text-[#3b82f6]" />
                     )}
                   </Link>
                 );
@@ -205,18 +193,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       </div>
 
       {/* Bottom Network & Role Status Widget */}
-      <div className="p-3 border-t border-[#00C8FF]/15 bg-[#02090D]/50">
-        <div className="p-3 rounded-xl bg-[#071B25] border border-[#00C8FF]/20 flex items-center justify-between">
+      <div className="p-3 border-t border-[#3b82f6]/20 bg-[#02090D]/50">
+        <div className="p-3 rounded-xl bg-[#071B25] border border-[#3b82f6]/20 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C8FF] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00C8FF]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3b82f6] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#3b82f6]" />
             </span>
             <div>
               <div className="text-[11px] font-bold text-[#F1F8FC] flex items-center gap-1">
                 Arkiv Tiramisu
               </div>
-              <div className="text-[10px] text-[#55E5FF] font-medium flex items-center gap-1">
+              <div className="text-[10px] text-[#60a5fa] font-medium flex items-center gap-1">
                 <Database className="w-2.5 h-2.5" />
                 <span className="uppercase font-mono text-[9px]">
                   {role === 'admin' ? 'Officer [Admin]' : role === 'operator' ? 'Dealer [Operator]' : 'Public Observer'}
@@ -226,7 +214,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           </div>
           <Link
             href="/network"
-            className="text-[10px] text-[#00C8FF] hover:underline font-mono"
+            className="text-[10px] text-[#3b82f6] hover:underline font-mono"
           >
             #7738577
           </Link>

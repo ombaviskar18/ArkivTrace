@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, JetBrains_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { ClerkAuthSync } from "@/components/auth/ClerkAuthSync";
 import "./globals.css";
 
@@ -21,6 +22,14 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "ArkivTrace — Public Distribution Transparency",
   description: "Auditable public distribution records, grain dispatches, shop receipts, and discrepancy reconciliation powered by Arkiv blockchain.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/images/favicon.ico', sizes: 'any' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/images/logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -32,24 +41,42 @@ export default function RootLayout({
     <ClerkProvider
       dynamic
       appearance={{
+        theme: dark,
         variables: {
-          colorPrimary: '#00C8FF',
-          colorBackground: '#06151D',
+          colorPrimary: '#3b82f6',
+          colorPrimaryForeground: '#FFFFFF',
+          colorBackground: '#041017',
+          colorInput: '#06151D',
+          colorInputForeground: '#FFFFFF',
+          colorForeground: '#FFFFFF',
+          colorMutedForeground: '#91A9B7',
+          colorNeutral: '#FFFFFF',
         },
         elements: {
-          card: 'bg-[#06151D] border border-[#00C8FF]/20 shadow-2xl',
-          headerTitle: 'text-[#F1F8FC] font-bold',
-          headerSubtitle: 'text-[#91A9B7]',
-          socialButtonsBlockButton: 'bg-[#071B25] border border-[#00C8FF]/20 text-[#F1F8FC] hover:bg-[#09232F]',
-          formButtonPrimary: 'bg-[#00C8FF] text-[#02090D] font-bold hover:bg-[#55E5FF] shadow-[0_0_15px_rgba(0,200,255,0.4)]',
-          footerActionLink: 'text-[#00C8FF] hover:text-[#55E5FF]',
-          formFieldLabel: 'text-[#91A9B7] text-xs font-semibold',
-          formFieldInput: 'bg-[#071B25] border border-[#00C8FF]/20 text-[#F1F8FC] focus:border-[#00C8FF]',
+          card: 'bg-[#041017] border border-[#3b82f6]/30 shadow-2xl text-white',
+          headerTitle: 'text-white font-bold text-xl',
+          headerSubtitle: 'text-[#91A9B7] text-sm',
+          socialButtonsBlockButton: 'bg-[#06151D] border border-[#3b82f6]/25 text-white hover:bg-[#09232F]',
+          socialButtonsBlockButtonText: 'text-white font-semibold',
+          formButtonPrimary: 'bg-[#3b82f6] text-white font-bold hover:bg-[#60a5fa] shadow-[0_0_20px_rgba(59, 130, 246, 0.4)]',
+          footerActionLink: 'text-[#60a5fa] hover:text-[#93c5fd] font-semibold',
+          footerActionText: 'text-[#91A9B7]',
+          formFieldLabel: 'text-white text-xs font-semibold',
+          formFieldInput: 'bg-[#06151D] border border-[#3b82f6]/30 text-white focus:border-[#3b82f6]',
+          userButtonPopoverCard: 'bg-[#041017] border border-[#3b82f6]/30 text-white shadow-2xl',
+          userPreviewMainIdentifier: 'text-white font-bold',
+          userPreviewSecondaryIdentifier: 'text-[#91A9B7]',
+          userButtonPopoverActionButton: 'text-white hover:bg-[#3b82f6]/15 hover:text-white',
+          userButtonPopoverActionButtonText: 'text-white font-medium',
+          userButtonPopoverActionButtonIcon: 'text-[#60a5fa]',
+          userButtonPopoverFooter: 'border-t border-[#3b82f6]/20 text-[#91A9B7]',
         },
       }}
     >
       <html lang="en" className="dark" suppressHydrationWarning>
         <head>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="apple-touch-icon" href="/images/logo.png" />
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -99,7 +126,7 @@ export default function RootLayout({
         </head>
         <body
           suppressHydrationWarning
-          className={`${poppins.variable} ${jetbrainsMono.variable} antialiased bg-[#02090D] text-[#F1F8FC] min-h-screen selection:bg-[#00C8FF]/20 selection:text-[#55E5FF]`}
+          className={`${poppins.variable} ${jetbrainsMono.variable} antialiased bg-[#02090D] text-[#F1F8FC] min-h-screen selection:bg-[#3b82f6]/20 selection:text-[#60a5fa]`}
         >
           <ClerkAuthSync />
           {children}

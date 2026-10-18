@@ -47,7 +47,7 @@ export const VerificationBadge: React.FC<VerificationBadgeProps> = ({ status }) 
       {status === 'Verified' ? (
         <ShieldCheck className="w-3 h-3 mr-1 text-[#36D399]" />
       ) : status === 'Demo Data' ? (
-        <Database className="w-3 h-3 mr-1 text-[#55E5FF]" />
+        <Database className="w-3 h-3 mr-1 text-[#60a5fa]" />
       ) : null}
       {label}
     </span>

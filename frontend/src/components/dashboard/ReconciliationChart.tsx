@@ -24,7 +24,7 @@ export const ReconciliationChart: React.FC<ReconciliationChartProps> = ({ data }
             <Tooltip
               contentStyle={{
                 backgroundColor: '#071B25',
-                borderColor: 'rgba(0, 200, 255, 0.3)',
+                borderColor: 'rgba(59, 130, 246,  0.3)',
                 borderRadius: '8px',
                 fontSize: '12px',
                 color: '#F1F8FC',
@@ -64,7 +64,7 @@ export const ReconciliationChart: React.FC<ReconciliationChartProps> = ({ data }
           return (
             <div
               key={item.name}
-              className="flex items-center justify-between p-2 rounded-lg bg-[#06151D]/60 border border-[#00C8FF]/10 text-xs"
+              className="flex items-center justify-between p-2 rounded-lg bg-[#06151D]/60 border border-[#3b82f6]/10 text-xs"
             >
               <div className="flex items-center gap-2">
                 <span
