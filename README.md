@@ -21,17 +21,6 @@ However, the system faces severe systemic challenges:
 
 **ArkivTrace** uses **Arkiv as an append-only, queryable Web3 data layer**. Depot dispatches, shop receipts, monthly stock balances, and discrepancy cases are stored as indexed entities with type-specific expiration (180 or 365 days). Citizens and shop operators can inspect evidence through the portal and Telegram bot without requiring crypto wallets or paying gas fees.
 
----
-
-## 🎯 Track Submission: Best Indian Use Case
-
-ArkivTrace is specifically designed for the Indian socio-economic context:
-- **Direct National Impact:** Tackles leakage in the National Food Security Act (NFSA) supply chain.
-- **Data minimization:** New Arkiv writes omit direct operator, driver, receiver, reporter, and reviewer name/contact fields. Use synthetic test data and never put personal data in free-text descriptions or remarks. Previously written immutable entities may still contain values submitted before this change.
-- **Mobile-First for Indian Citizens:** Operates via Telegram ([@ArkivTraceAlert_Bot](https://t.me/ArkivTraceAlert_Bot)) for instant transparency on low-bandwidth 4G/5G networks.
-
----
-
 ## 💡 Why Arkiv? (Why Not Postgres, IPFS, or Subgraphs?)
 
 | Technology | What Breaks if Used Instead of Arkiv? |
