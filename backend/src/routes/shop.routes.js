@@ -18,4 +18,7 @@ router.get('/:id/timeline', validate(shopTimelineSchema), shopController.getShop
 // Retrieve shop by Arkiv entity key or shopId
 router.get('/:id', shopController.getShopById);
 
+// Assign or update operator for an existing shop (Admin only)
+router.post('/:id/operator', requireRole(['admin']), shopController.assignOperator);
+
 export default router;

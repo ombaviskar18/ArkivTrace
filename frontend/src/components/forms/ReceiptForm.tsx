@@ -91,6 +91,20 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({
     );
   }
 
+  if (!isOperator) {
+    return (
+      <div className="p-6 text-center space-y-3">
+        <div className="w-12 h-12 rounded-full bg-[#3b82f6]/15 text-[#3b82f6] flex items-center justify-center mx-auto">
+          <Lock className="w-6 h-6" />
+        </div>
+        <h4 className="text-sm font-bold text-[#F1F8FC]">Operator Permission Required</h4>
+        <p className="text-xs text-[#91A9B7]">
+          Only authenticated Fair Price Shop operators can record arrival weighments and acknowledge receipts on Arkiv.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (

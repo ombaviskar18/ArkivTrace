@@ -31,14 +31,19 @@ Represents a government-authorized Fair Price Shop (Ration Shop) under the Natio
 - **On-Chain Attributes:**
   - `project=arkivtrace`
   - `type=shop`
-  - `shop_id` (e.g. `FPS-MH-401`)
+  - `shop_id` (e.g. `FPS-MH-401`) (required)
+  - `operator_email` (e.g. `operator@arkivtrace.org`) (optional Clerk-registered email of the operator)
   - `district` (e.g. `Pune`)
   - `state` (e.g. `Maharashtra`)
+- **Relationships:**
+  - `assigned_operator`: user (derived from Clerk `publicMetadata.shopId`)
 - **JSON Payload Fields:**
   ```json
   {
     "shopId": "FPS-MH-401",
     "name": "Fair Price Shop #401 Pune",
+    "operatorName": "Ramesh Patil",
+    "operatorEmail": "operator@arkivtrace.org",
     "district": "Pune",
     "state": "Maharashtra",
     "address": "Shop 401, Pimpri Chinchwad Market, Pune",
@@ -52,6 +57,31 @@ Represents a government-authorized Fair Price Shop (Ration Shop) under the Natio
     "project": "arkivtrace",
     "entityType": "shop",
     "createdAt": "2026-10-17T15:03:24.934Z"
+  }
+  ```
+
+---
+
+### 2.2 `invitation` (Pending Operator Onboarding)
+Created when an administrator registers a Fair Price Shop with an operator email address that has not yet registered a Clerk user account.
+
+- **Entity Type:** `invitation`
+- **Expiration:** **180 days**
+- **On-Chain Attributes:**
+  - `project=arkivtrace`
+  - `type=invitation`
+  - `shop_id` (e.g. `FPS-MH-401`)
+  - `operator_email` (e.g. `pending-dealer@example.com`)
+  - `status=pending`
+- **JSON Payload Fields:**
+  ```json
+  {
+    "shopId": "FPS-MH-401",
+    "operatorEmail": "pending-dealer@example.com",
+    "status": "pending",
+    "project": "arkivtrace",
+    "entityType": "invitation",
+    "createdAt": "2026-10-18T14:15:00.000Z"
   }
   ```
 

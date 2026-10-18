@@ -499,7 +499,10 @@ export default function Radar({
       depth: false,
       stencil: false
     }) as WebGL2RenderingContext | null;
-    if (!container || !canvas || !gl) return undefined;
+    if (!container || !canvas || !gl) {
+      console.warn('[Radar] WebGL2 canvas context unavailable');
+      return undefined;
+    }
 
     const floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     const range = floatTargets ? 1 : 0.25;
@@ -510,7 +513,10 @@ export default function Radar({
       up: link(gl, QUAD_VERTEX, UP, ['aPosition']),
       composite: link(gl, QUAD_VERTEX, COMPOSITE, ['aPosition'])
     };
-    if (Object.values(programs).some(entry => !entry)) return undefined;
+    if (Object.values(programs).some(entry => !entry)) {
+      console.warn('[Radar] WebGL2 shader program compilation failed');
+      return undefined;
+    }
 
     const quadBuffer = gl.createBuffer();
     const quadVao = gl.createVertexArray();
@@ -929,13 +935,14 @@ export default function Radar({
         gl.deleteTexture(target.texture);
         gl.deleteFramebuffer(target.framebuffer);
       }
-      for (const entry of Object.values(programs)) gl.deleteProgram(entry.program);
+      for (const entry of Object.values(programs)) {
+        if (entry?.program) gl.deleteProgram(entry.program);
+      }
       gl.deleteBuffer(quadBuffer);
       gl.deleteBuffer(cornerBuffer);
       gl.deleteBuffer(instanceBuffer);
       gl.deleteVertexArray(quadVao);
       gl.deleteVertexArray(spriteVao);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 

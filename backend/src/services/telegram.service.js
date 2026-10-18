@@ -58,6 +58,34 @@ class TelegramService {
     }
   }
 
+  // --- Notify operator when a shop is assigned to them ---
+  async notifyOperatorAssigned(assignment) {
+    try {
+      const { shopId, operatorEmail, operatorName, entityKey } = assignment;
+      if (!shopId) return;
+
+      const operatorChatIds = telegramStore.getOperatorChatIdsForShop(shopId);
+      if (!operatorChatIds.length) return;
+
+      const msg = [
+        `🏪 <b>Fair Price Shop Assignment</b>`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `📍 <b>Shop ID:</b> <code>${shopId}</code>`,
+        operatorName ? `👤 <b>Operator:</b> ${operatorName}` : '',
+        operatorEmail ? `📧 <b>Email:</b> <code>${operatorEmail}</code>` : '',
+        entityKey ? `🔗 <b>Entity:</b> <code>${entityKey}</code>` : '',
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `✅ <i>You have been assigned as the verified operator for this shop. You can now confirm grain dispatches and submit stock reports via the ArkivTrace portal.</i>`,
+      ].filter(Boolean).join('\n');
+
+      for (const chatId of operatorChatIds) {
+        await this.sendMessage(chatId, msg);
+      }
+    } catch (err) {
+      console.warn('[TelegramService] Error in notifyOperatorAssigned:', err.message);
+    }
+  }
+
   // --- Feature 1: Notify assigned shop operator after dispatch persisted on Arkiv ---
   async notifyDispatchCreated(dispatchRecord) {
     try {

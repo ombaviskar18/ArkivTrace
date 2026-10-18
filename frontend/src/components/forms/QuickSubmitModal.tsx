@@ -48,13 +48,13 @@ export const QuickSubmitModal: React.FC<QuickSubmitModalProps> = ({
       id: 'receipt',
       label: 'Shop Receipt',
       icon: <PackageCheck className="w-3.5 h-3.5" />,
-      allowedRoles: ['admin', 'operator'],
+      allowedRoles: ['operator'],
     },
     {
       id: 'stock',
       label: 'Stock Report',
       icon: <Warehouse className="w-3.5 h-3.5" />,
-      allowedRoles: ['admin', 'operator'],
+      allowedRoles: ['operator'],
     },
     {
       id: 'discrepancy',

@@ -165,22 +165,29 @@ class StockReportService {
     // 11. If MISMATCH, create a linked discrepancy entity
     let discrepancyResult = null;
     if (stockStatus === 'MISMATCH') {
-      discrepancyResult = await this._recordStockDiscrepancy({
-        reportId,
-        shopId,
-        grainType,
-        period,
-        reportEntityKey: reportResult.entityKey,
-        shopEntityKey: shop.key,
-        openingStockKg,
-        totalReceivedKg,
-        distributedKg,
-        expectedClosingKg,
-        closingStockKg,
-        stockDifferenceKg,
-        distributedExceedsAvailable,
-        receiptEntityKeys,
-      });
+      try {
+        discrepancyResult = await this._recordStockDiscrepancy({
+          reportId,
+          shopId,
+          grainType,
+          period,
+          reportEntityKey: reportResult.entityKey,
+          shopEntityKey: shop.key,
+          openingStockKg,
+          totalReceivedKg,
+          distributedKg,
+          expectedClosingKg,
+          closingStockKg,
+          stockDifferenceKg,
+          distributedExceedsAvailable,
+          receiptEntityKeys,
+        });
+      } catch (discErr) {
+        console.warn(
+          `[StockReport] Discrepancy entity creation warning for report '${reportId}':`,
+          discErr.message
+        );
+      }
     }
 
     return {
@@ -329,6 +336,8 @@ class StockReportService {
     const currentPeriod = new Date().toISOString().slice(0, 7);
     const periodIsVerifiedHistoricalMonth = period < currentPeriod;
 
+    const dispatchCache = new Map();
+
     const receiptChecks = await Promise.all(
       allReceipts.map(async (receipt) => {
         const payload = receipt.payload || {};
@@ -338,12 +347,28 @@ class StockReportService {
           return null;
         }
 
+        // Fast path: direct grainType on receipt
+        const directGrain = payload.grainType ?? payload.grain_type ?? receipt.attributes?.grain_type ?? null;
+        if (directGrain) {
+          if (directGrain !== grainType) return null;
+          return { matched: true, receipt };
+        }
+
         const dispatchId = payload.dispatchId ?? payload.dispatch_id ?? null;
         if (!dispatchId) {
           return { matched: false, unresolved: true, key: receipt.key };
         }
 
-        const dispatch = await dispatchService.getDispatchById(dispatchId);
+        let dispatch = dispatchCache.get(dispatchId);
+        if (!dispatch) {
+          try {
+            dispatch = await dispatchService.getDispatchById(dispatchId);
+            if (dispatch) dispatchCache.set(dispatchId, dispatch);
+          } catch {
+            return { matched: false, unresolved: true, key: receipt.key };
+          }
+        }
+
         if (!dispatch) {
           return { matched: false, unresolved: true, key: receipt.key };
         }

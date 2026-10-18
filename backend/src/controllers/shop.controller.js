@@ -9,9 +9,13 @@ export const shopController = {
   async createShop(req, res, next) {
     try {
       const result = await shopService.createShop(req.body);
+      const isInvited = result.operatorAssignment?.status === 'invitation_created';
+      const message = isInvited
+        ? `Ration shop '${result.shopId}' registered on Arkiv. Invitation created and sent to '${req.body.operatorEmail}'.`
+        : `Ration shop '${result.shopId}' successfully registered on Arkiv Tiramisu database with operator assigned.`;
       return res.status(201).json({
         success: true,
-        message: `Ration shop '${result.shopId}' successfully registered on Arkiv Tiramisu database`,
+        message,
         data: result,
       });
     } catch (error) {
@@ -90,6 +94,25 @@ export const shopController = {
       }
 
       return res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * POST /api/v1/shops/:id/operator
+   * Assign or update operator email for an existing shop (Admin only)
+   */
+  async assignOperator(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { operatorEmail } = req.body;
+      const result = await shopService.assignOperatorToShop(id, operatorEmail);
+      return res.status(200).json({
+        success: true,
+        message: `Operator '${operatorEmail}' successfully assigned to shop '${id}'.`,
+        data: result,
+      });
     } catch (error) {
       next(error);
     }

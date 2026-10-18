@@ -1,13 +1,15 @@
-import { getAuth, createClerkClient } from '@clerk/express';
+import { getAuth } from '@clerk/express';
+import { clerkClient } from '../config/clerk.js';
 
-const clerkClient = process.env.CLERK_SECRET_KEY
-  ? createClerkClient({
-      secretKey: process.env.CLERK_SECRET_KEY,
-      publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
-    })
-  : null;
+export const userMetadataCache = new Map();
 
-const userMetadataCache = new Map();
+export function clearUserMetadataCache(userId) {
+  if (userId) {
+    userMetadataCache.delete(userId);
+  } else {
+    userMetadataCache.clear();
+  }
+}
 
 async function getUserMetadata(userId) {
   if (!userId || !clerkClient) return {};
@@ -64,6 +66,9 @@ export const readClerkRole = (auth) => {
 /**
  * Extracts a user's assigned shop ID(s) ONLY from verified Clerk session claims.
  * Never inspects request headers (x-shop-id, x-demo-shop-id, etc.).
+ *
+ * NOTE: The operator's publicMetadata.shopId is securely bound by the Depot Admin
+ * during the Shop Creation flow (POST /api/v1/shops) or upon invitation acceptance.
  *
  * @param {Object} auth - Clerk auth object
  * @returns {string[]} Array of assigned shop ID strings
@@ -177,6 +182,7 @@ export const requireRole = (allowedRoles = []) => async (req, res, next) => {
       isAuthenticated = true;
       authSource = 'demo-header';
       role = normalizedRole(headerRole);
+      req.clerkUserId = req.headers['x-user-id'] || req.headers['x-demo-user-id'] || 'demo_user_id';
 
       const demoShop =
         req.headers['x-shop-id'] ||

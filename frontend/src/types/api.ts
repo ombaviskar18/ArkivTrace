@@ -235,11 +235,34 @@ export interface CreateDiscrepancyInput {
   reportedQuantityDiffKg?: number;
 }
 
+export interface Shop {
+  id: string;
+  shopId: string;
+  name: string;
+  operatorName: string;
+  operatorEmail?: string;
+  operatorAddress?: string;
+  district: string;
+  state: string;
+  address: string;
+  allocatedBeneficiaries: number;
+  monthlyQuotaKg: {
+    wheat: number;
+    rice: number;
+    coarseGrains?: number;
+  };
+  status: 'active' | 'suspended' | 'inactive';
+  entityKey: string;
+  txHash?: string;
+  createdAt?: string;
+  verificationStatus?: string;
+}
 
 export interface CreateShopInput {
   shopId: string;
   name: string;
   operatorName: string;
+  operatorEmail?: string;
   operatorAddress?: string;
   district: string;
   state: string;
@@ -252,4 +275,5 @@ export interface CreateShopInput {
   };
   status?: 'active' | 'suspended' | 'inactive';
 }
+
 

@@ -3,28 +3,16 @@
 import React, { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { TelegramLinkCard } from '@/components/settings/TelegramLinkCard';
-import { api } from '@/lib/api';
 import {
-  Settings as SettingsIcon,
-  RotateCcw,
   Sliders,
   Database,
   ShieldCheck,
-  Check,
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const [pageSize, setPageSize] = useState('10');
   const [density, setDensity] = useState<'compact' | 'comfortable'>('comfortable');
-  const [resetDone, setResetDone] = useState(false);
-
-  const handleResetData = () => {
-    api.resetDemoData();
-    setResetDone(true);
-    setTimeout(() => setResetDone(false), 2500);
-  };
 
   return (
     <AppShell>
@@ -34,7 +22,7 @@ export default function SettingsPage() {
           Preferences & <span className="text-[#3b82f6]">Settings</span>
         </h2>
         <p className="text-xs text-[#91A9B7] mt-1">
-          Configure table display properties, inspect environment configuration, and manage demonstration datasets.
+          Configure table display properties, link Telegram alerts, and inspect environment security configuration.
         </p>
       </div>
 
@@ -92,40 +80,7 @@ export default function SettingsPage() {
           </div>
         </Card>
 
-        {/* Demo Data Management */}
-        <Card elevated title="Demonstration Data Engine">
-          <div className="space-y-4 text-xs">
-            <p className="text-[#91A9B7] leading-relaxed">
-              ArkivTrace is currently running in synthetic demonstration mode with client-side persistence. You can reset the dataset back to its default seed values at any time.
-            </p>
 
-            <div className="p-3.5 rounded-xl bg-[#06151D] border border-[#3b82f6]/20 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#91A9B7]">Data Mode:</span>
-                <span className="font-semibold text-[#60a5fa]">Client LocalStorage Cache</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#91A9B7]">Network:</span>
-                <span className="font-mono text-[#F1F8FC]">Arkiv Tiramisu (#8291)</span>
-              </div>
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={handleResetData}
-              icon={
-                resetDone ? (
-                  <Check className="w-4 h-4 text-[#36D399]" />
-                ) : (
-                  <RotateCcw className="w-4 h-4" />
-                )
-              }
-              className="w-full"
-            >
-              {resetDone ? 'Demo Data Restored!' : 'Reset Demo Data to Initial Seed'}
-            </Button>
-          </div>
-        </Card>
 
         {/* Architecture & Security Principles */}
         <div className="md:col-span-2">

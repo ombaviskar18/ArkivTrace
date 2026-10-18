@@ -4,6 +4,7 @@ import {
   ShopReceipt,
   StockReport,
   Discrepancy,
+  Shop,
   ArkivRecord,
   ShopTimelineEvent,
   NetworkStatus,
@@ -14,7 +15,6 @@ import {
   CreateDiscrepancyInput,
   RecordType,
   ReconciliationStatus,
-  VerificationStatus,
 } from '@/types/api';
 import {
   INITIAL_DASHBOARD_SUMMARY,
@@ -244,6 +244,33 @@ function mapTimelineItemToArkivRecord(item: any): ArkivRecord {
   };
 }
 
+function mapEntityToShop(entity: any): Shop {
+  const p = entity.payload || {};
+  const attrs = entity.attributes || {};
+  return {
+    id: p.shopId || attrs.shop_id || entity.key,
+    shopId: p.shopId || attrs.shop_id || 'UNKNOWN',
+    name: p.name || `Fair Price Shop #${p.shopId || attrs.shop_id}`,
+    operatorName: p.operatorName || 'Assigned Dealer',
+    operatorEmail: p.operatorEmail || attrs.operator_email || '',
+    operatorAddress: p.operatorAddress || '',
+    district: p.district || attrs.district || 'General',
+    state: p.state || attrs.state || 'State',
+    address: p.address || 'Public Distribution Outlet',
+    allocatedBeneficiaries: Number(p.allocatedBeneficiaries || 0),
+    monthlyQuotaKg: {
+      wheat: Number(p.monthlyQuotaKg?.wheat || 0),
+      rice: Number(p.monthlyQuotaKg?.rice || 0),
+      coarseGrains: Number(p.monthlyQuotaKg?.coarseGrains || 0),
+    },
+    status: (p.status as any) || 'active',
+    entityKey: entity.key,
+    txHash: entity.txHash || entity.key,
+    createdAt: p.createdAt || entity.createdAt,
+    verificationStatus: 'Verified On-Chain',
+  };
+}
+
 function mapRawEntityToArkivRecord(entity: any): ArkivRecord {
   if (!entity) return null as any;
   const p = entity.payload || entity;
@@ -331,6 +358,80 @@ class LocalDataStore {
   private stockReports: StockReport[] = [...INITIAL_STOCK_REPORTS];
   private discrepancies: Discrepancy[] = [...INITIAL_DISCREPANCIES];
   private records: ArkivRecord[] = [...INITIAL_EVIDENCE_RECORDS];
+  private shops: Shop[] = [
+    {
+      id: 'FPS-DEL-8826',
+      shopId: 'FPS-DEL-8826',
+      name: 'Fair Price Shop #8826',
+      operatorName: 'Sunita Sharma',
+      operatorEmail: 'sunita.sharma@ration.gov.in',
+      operatorAddress: '0x1234567890123456789012345678901234567890',
+      district: 'Central Delhi',
+      state: 'Delhi',
+      address: 'Shop 12, Main Bazar, Daryaganj, New Delhi',
+      allocatedBeneficiaries: 1250,
+      monthlyQuotaKg: { wheat: 5000, rice: 7500, coarseGrains: 500 },
+      status: 'active',
+      entityKey: '0x11ca36f451e5699ba7006beef99611363bc48a04fb8f956e63f1553678a79239',
+      txHash: '0x11ca36f451e5699ba7006beef99611363bc48a04fb8f956e63f1553678a79239',
+      createdAt: '2026-10-16T17:01:29.526Z',
+      verificationStatus: 'Verified On-Chain',
+    },
+    {
+      id: 'FPS-RCP-5108',
+      shopId: 'FPS-RCP-5108',
+      name: 'Receipt Test Shop FPS-RCP-5108',
+      operatorName: 'Priya Nair',
+      operatorEmail: 'priya.nair@ration.gov.in',
+      operatorAddress: '0x1234567890123456789012345678901234567890',
+      district: 'South Delhi',
+      state: 'Delhi',
+      address: '5, Link Road, Lajpat Nagar',
+      allocatedBeneficiaries: 800,
+      monthlyQuotaKg: { wheat: 4000, rice: 6000, coarseGrains: 400 },
+      status: 'active',
+      entityKey: '0xd6f7f3cee6049277e518c102bb967a6083615a1263472b74deab21d5d3add9c1',
+      txHash: '0xd6f7f3cee6049277e518c102bb967a6083615a1263472b74deab21d5d3add9c1',
+      createdAt: '2026-10-16T17:06:11.057Z',
+      verificationStatus: 'Verified On-Chain',
+    },
+    {
+      id: 'FPS-MH-402',
+      shopId: 'FPS-MH-402',
+      name: 'Pune Central Ration Outlet #402',
+      operatorName: 'Ramesh Patil',
+      operatorEmail: 'ramesh.patil@ration.gov.in',
+      operatorAddress: '0x1234567890123456789012345678901234567890',
+      district: 'Pune Central',
+      state: 'Maharashtra',
+      address: 'Shop #12, Market Yard, Hadapsar, Pune',
+      allocatedBeneficiaries: 1200,
+      monthlyQuotaKg: { wheat: 5000, rice: 4000, coarseGrains: 1000 },
+      status: 'active',
+      entityKey: '0x4f8a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a',
+      txHash: '0x4f8a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a',
+      createdAt: '2026-10-15T10:30:00.000Z',
+      verificationStatus: 'Verified On-Chain',
+    },
+    {
+      id: 'FPS-2041',
+      shopId: 'FPS-2041',
+      name: 'Raigad Coastal Fair Price Shop',
+      operatorName: 'Vijay Deshmukh',
+      operatorEmail: 'vijay.deshmukh@ration.gov.in',
+      operatorAddress: '0x1234567890123456789012345678901234567890',
+      district: 'Raigad',
+      state: 'Maharashtra',
+      address: 'Alibag Port Road, Raigad - 402201',
+      allocatedBeneficiaries: 950,
+      monthlyQuotaKg: { wheat: 4500, rice: 5500, coarseGrains: 500 },
+      status: 'active',
+      entityKey: '0x9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b',
+      txHash: '0x9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b',
+      createdAt: '2026-10-14T08:15:00.000Z',
+      verificationStatus: 'Verified On-Chain',
+    },
+  ];
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -346,6 +447,9 @@ class LocalDataStore {
 
         const storedDisc = localStorage.getItem('arkiv_demo_disc');
         if (storedDisc) this.discrepancies = JSON.parse(storedDisc);
+
+        const storedShops = localStorage.getItem('arkiv_demo_shops');
+        if (storedShops) this.shops = JSON.parse(storedShops);
       } catch (err) {
         console.warn('LocalStorage unavailable for mock persistence:', err);
       }
@@ -359,6 +463,7 @@ class LocalDataStore {
       localStorage.setItem('arkiv_demo_receipts', JSON.stringify(this.receipts));
       localStorage.setItem('arkiv_demo_stock', JSON.stringify(this.stockReports));
       localStorage.setItem('arkiv_demo_disc', JSON.stringify(this.discrepancies));
+      localStorage.setItem('arkiv_demo_shops', JSON.stringify(this.shops));
     } catch (e) {
       console.warn('Failed to save to localStorage:', e);
     }
@@ -548,6 +653,58 @@ class LocalDataStore {
     };
   }
 
+  getShops(params: { district?: string; search?: string } = {}): Shop[] {
+    let list = [...this.shops];
+    if (params.district && params.district !== 'All') {
+      list = list.filter((s) => s.district.toLowerCase() === params.district!.toLowerCase());
+    }
+    if (params.search) {
+      const q = params.search.toLowerCase().trim();
+      list = list.filter(
+        (s) =>
+          s.shopId.toLowerCase().includes(q) ||
+          s.name.toLowerCase().includes(q) ||
+          s.operatorName.toLowerCase().includes(q) ||
+          (s.operatorEmail && s.operatorEmail.toLowerCase().includes(q)) ||
+          s.district.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }
+
+  addShop(input: CreateShopInput): Shop {
+    const randomHex = Math.random().toString(16).slice(2, 10);
+    const entityKey = `0x${randomHex}${Math.random().toString(16).slice(2, 10)}88a1b2c3`;
+    const txHash = `0x${randomHex}${Math.random().toString(16).slice(2, 10)}`;
+
+    const newShop: Shop = {
+      id: input.shopId.trim().toUpperCase(),
+      shopId: input.shopId.trim().toUpperCase(),
+      name: input.name.trim(),
+      operatorName: input.operatorName.trim(),
+      operatorEmail: input.operatorEmail?.trim() || '',
+      operatorAddress: input.operatorAddress?.trim() || '0x1234567890123456789012345678901234567890',
+      district: input.district.trim(),
+      state: input.state.trim(),
+      address: input.address.trim(),
+      allocatedBeneficiaries: Number(input.allocatedBeneficiaries || 0),
+      monthlyQuotaKg: {
+        wheat: Number(input.monthlyQuotaKg?.wheat || 0),
+        rice: Number(input.monthlyQuotaKg?.rice || 0),
+        coarseGrains: Number(input.monthlyQuotaKg?.coarseGrains || 0),
+      },
+      status: input.status || 'active',
+      entityKey,
+      txHash,
+      createdAt: new Date().toISOString(),
+      verificationStatus: 'Verified On-Chain',
+    };
+
+    this.shops.unshift(newShop);
+    this.save();
+    return newShop;
+  }
+
   resetDemo(): void {
     this.dispatches = [...INITIAL_DISPATCHES];
     this.receipts = [...INITIAL_RECEIPTS];
@@ -559,6 +716,7 @@ class LocalDataStore {
       localStorage.removeItem('arkiv_demo_receipts');
       localStorage.removeItem('arkiv_demo_stock');
       localStorage.removeItem('arkiv_demo_disc');
+      localStorage.removeItem('arkiv_demo_shops');
     }
   }
 }
@@ -1183,6 +1341,71 @@ export const api = {
   },
 
   /**
+   * GET /api/v1/shops
+   * Fetch all registered Fair Price Shops
+   */
+  async getShops(params: { district?: string; search?: string; limit?: number } = {}): Promise<Shop[]> {
+    if (IS_DEMO_MODE) {
+      await new Promise((r) => setTimeout(r, 100));
+      return localStore.getShops(params);
+    }
+
+    try {
+      const url = new URL(`${API_BASE_URL}/shops`);
+      if (params.district && params.district !== 'All') {
+        url.searchParams.set('district', params.district);
+      }
+      url.searchParams.set('limit', String(params.limit || 50));
+
+      const res = await fetch(url.toString(), {
+        headers: await getAuthHeaders(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+
+      const json = await res.json();
+      const rawEntities = json.data?.entities || [];
+      let shops: Shop[] = rawEntities.map(mapEntityToShop);
+
+      if (shops.length === 0) {
+        shops = localStore.getShops(params);
+      } else {
+        // Deduplicate by unique shopId to prevent duplicate rows and duplicate key warnings
+        const seenShops = new Map<string, Shop>();
+        for (const s of shops) {
+          const id = s.shopId.toUpperCase().trim();
+          const existing = seenShops.get(id);
+          if (!existing) {
+            seenShops.set(id, s);
+          } else {
+            const currentTime = new Date(s.createdAt || 0).getTime();
+            const existingTime = new Date(existing.createdAt || 0).getTime();
+            if (currentTime > existingTime || (s.operatorEmail && !existing.operatorEmail)) {
+              seenShops.set(id, s);
+            }
+          }
+        }
+        shops = Array.from(seenShops.values());
+
+        if (params.search) {
+          const q = params.search.toLowerCase().trim();
+          shops = shops.filter((s: Shop) =>
+            s.shopId.toLowerCase().includes(q) ||
+            s.name.toLowerCase().includes(q) ||
+            s.operatorName.toLowerCase().includes(q) ||
+            (s.operatorEmail && s.operatorEmail.toLowerCase().includes(q)) ||
+            s.district.toLowerCase().includes(q)
+          );
+        }
+      }
+
+      return shops;
+    } catch (err) {
+      console.warn('Failed to fetch shops from live API, falling back to local store:', err);
+      return localStore.getShops(params);
+    }
+  },
+
+  /**
    * POST /api/v1/shops (Admin only)
    */
   async createShop(input: CreateShopInput): Promise<{
@@ -1195,6 +1418,7 @@ export const api = {
       shopId: input.shopId.trim().toUpperCase(),
       name: input.name.trim(),
       operatorName: input.operatorName.trim(),
+      operatorEmail: input.operatorEmail?.trim() || '',
       operatorAddress: input.operatorAddress?.trim() || '0x1234567890123456789012345678901234567890',
       district: input.district.trim(),
       state: input.state.trim(),
@@ -1207,6 +1431,17 @@ export const api = {
       },
       status: input.status || 'active',
     };
+
+    if (IS_DEMO_MODE) {
+      await new Promise((r) => setTimeout(r, 400));
+      const s = localStore.addShop(input);
+      return {
+        entityKey: s.entityKey,
+        txHash: s.txHash || s.entityKey,
+        shopId: s.shopId,
+        explorerUrl: `https://tiramisu.explorer.arkiv.network/tx/${s.txHash}`,
+      };
+    }
 
     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE_URL}/shops`, {
@@ -1225,6 +1460,57 @@ export const api = {
     if (!res.ok) {
       const errJson = await res.json().catch(() => null);
       throw new Error(errJson?.message || `Failed to create shop (HTTP ${res.status})`);
+    }
+
+    const json = await res.json();
+    localStore.addShop(input);
+    return json.data;
+  },
+
+  /**
+   * GET /api/v1/auth/sync
+   * Synchronize authenticated Clerk user role with on-chain Arkiv shop assignments.
+   */
+  async syncAuthProfile(): Promise<{
+    role: string;
+    shopId: string | null;
+    assignedShopIds: string[];
+    updated: boolean;
+  } | null> {
+    try {
+      const headers = await getAuthHeaders();
+      const authHeader = (headers as Record<string, string>)['Authorization'];
+      if (!authHeader) return null;
+
+      const res = await fetch(`${API_BASE_URL}/auth/sync`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!res.ok) return null;
+      const json = await res.json();
+      return json.data || null;
+    } catch (err) {
+      console.warn('Profile sync failed silently:', err);
+      return null;
+    }
+  },
+
+  /**
+   * POST /api/v1/shops/:id/operator (Admin only)
+   * Assign or update operator email for an existing shop on Arkiv
+   */
+  async assignShopOperator(shopId: string, operatorEmail: string): Promise<any> {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE_URL}/shops/${encodeURIComponent(shopId)}/operator`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ operatorEmail: operatorEmail.trim() }),
+    });
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => null);
+      throw new Error(errJson?.message || `Failed to assign operator (HTTP ${res.status})`);
     }
 
     const json = await res.json();

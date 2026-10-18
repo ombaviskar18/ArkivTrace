@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import { telegramStore } from '../src/services/telegram.store.js';
 import { telegramService } from '../src/services/telegram.service.js';
+process.env.ALLOW_DEMO_ROLE_HEADERS = 'true';
 import app from '../src/app.js';
 
 function listen(appInstance) {

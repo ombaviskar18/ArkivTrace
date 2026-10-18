@@ -63,6 +63,8 @@ class ReceiptService {
     const { discrepancyKg, discrepancyPercent, discrepancyStatus } =
       this._calculateDiscrepancy(dispatchedQty, receivedQty);
 
+    const grainType = dispatch.payload?.grainType || dispatch.payload?.grain_type || dispatch.attributes?.grain_type || 'wheat';
+
     // 4. Arkiv attributes (snake_case — Arkiv rejects camelCase bytes on-chain)
     const attributes = {
       project: 'arkivtrace',
@@ -70,6 +72,7 @@ class ReceiptService {
       receipt_id: receiptData.receiptId,
       dispatch_id: receiptData.dispatchId,
       shop_id: receiptData.shopId,
+      grain_type: grainType,
       status: 'confirmed',
       discrepancy_status: discrepancyStatus, // none | minor | major | critical
     };
@@ -81,6 +84,7 @@ class ReceiptService {
       project: 'arkivtrace',
       entityType: 'receipt',
       dispatchEntityKey: dispatch.key,
+      grainType,
       dispatchedQuantityKg: dispatchedQty,
       discrepancyKg,
       discrepancyPercent,
@@ -96,9 +100,9 @@ class ReceiptService {
       expiresDays: 365,
     });
 
-    // 7. Persist discrepancy entity when gap exceeds tolerance
+    // 7. Persist discrepancy entity when gap exceeds tolerance (major or critical only; minor transit loss is recorded on receipt only)
     let discrepancyResult = null;
-    if (discrepancyStatus !== 'none') {
+    if (discrepancyStatus === 'major' || discrepancyStatus === 'critical') {
       discrepancyResult = await this._recordDiscrepancy({
         receiptId: receiptData.receiptId,
         dispatchId: receiptData.dispatchId,

@@ -95,13 +95,15 @@ export default function StockReportsPage() {
             </p>
           </div>
 
-          <Button
-            variant="primary"
-            onClick={() => setIsModalOpen(true)}
-            icon={<Plus className="w-4 h-4" />}
-          >
-            Submit Stock Report
-          </Button>
+          {isOperator && (
+            <Button
+              variant="primary"
+              onClick={() => setIsModalOpen(true)}
+              icon={<Plus className="w-4 h-4" />}
+            >
+              Submit Stock Report
+            </Button>
+          )}
         </div>
 
       {/* Reconciliation Formula Banner */}

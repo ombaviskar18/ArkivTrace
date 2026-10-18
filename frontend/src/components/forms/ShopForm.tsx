@@ -13,10 +13,11 @@ interface ShopFormProps {
 export const ShopForm: React.FC<ShopFormProps> = ({ onSuccess, onCancel }) => {
   const { isAdmin } = useUserRole();
 
-  const [formData, setFormData] = useState<CreateShopInput>({
-    shopId: 'FPS-MH-482',
+  const [formData, setFormData] = useState<CreateShopInput>(() => ({
+    shopId: `FPS-MH-${Math.floor(500 + Math.random() * 400)}`,
     name: 'Fair Price Shop',
     operatorName: 'Ramesh Patil',
+    operatorEmail: '',
     operatorAddress: '0x1234567890123456789012345678901234567890',
     district: 'Pune',
     state: 'Maharashtra',
@@ -28,7 +29,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({ onSuccess, onCancel }) => {
       coarseGrains: 1000,
     },
     status: 'active',
-  });
+  }));
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +54,11 @@ export const ShopForm: React.FC<ShopFormProps> = ({ onSuccess, onCancel }) => {
     }
     if (!formData.operatorName.trim()) {
       setError('Operator name is required.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.operatorEmail?.trim() || !emailRegex.test(formData.operatorEmail.trim())) {
+      setError('A valid Clerk-registered operator email is required.');
       return;
     }
     if (!formData.district.trim() || !formData.state.trim()) {
@@ -171,6 +177,23 @@ export const ShopForm: React.FC<ShopFormProps> = ({ onSuccess, onCancel }) => {
             required
             className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
           />
+        </div>
+
+        {/* Dealer / Operator Email */}
+        <div>
+          <label className="block text-[11px] font-semibold text-[#91A9B7] mb-1">
+            Shop Operator Email *
+          </label>
+          <input
+            type="email"
+            name="operatorEmail"
+            value={formData.operatorEmail || ''}
+            onChange={(e) => setFormData({ ...formData, operatorEmail: e.target.value })}
+            placeholder="operator@arkivtrace.org"
+            required
+            className="w-full px-3 py-2 text-xs bg-[#06151D] border border-[#00C8FF]/20 rounded-lg text-[#F1F8FC] focus:border-[#00C8FF] focus:outline-none"
+          />
+          <p className="text-[10px] text-[#91A9B7] mt-0.5">Clerk-registered email of the shop operator</p>
         </div>
 
         {/* Beneficiaries Count */}

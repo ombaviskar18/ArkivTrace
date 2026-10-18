@@ -28,7 +28,7 @@ export const Topbar: React.FC<TopbarProps> = ({
     if (pathname === '/') return { title: 'Public Transparency Portal' };
     if (pathname.startsWith('/dispatches')) return { title: 'Depot Dispatches' };
     if (pathname.startsWith('/shops/')) return { title: 'Fair Price Shop Audit Timeline' };
-    if (pathname.startsWith('/shops')) return { title: 'Shop Receipts & Deliveries' };
+    if (pathname.startsWith('/shops')) return { title: 'Total Shops & Deliveries' };
     if (pathname.startsWith('/stock-reports')) return { title: 'Inventory & Stock Reconciliation' };
     if (pathname.startsWith('/discrepancies')) return { title: 'Discrepancy Investigation' };
     if (pathname.startsWith('/records/')) return { title: 'Arkiv Immutable Record Inspection' };

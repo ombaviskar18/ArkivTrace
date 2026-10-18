@@ -12,7 +12,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 
 export const RPC_URL = process.env.ARKIV_RPC_URL || tiramisu.rpcUrls.default.http[0];
 export const CHAIN_ID = parseInt(process.env.ARKIV_CHAIN_ID, 10) || tiramisu.id;
-export const RPC_TIMEOUT_MS = parseInt(process.env.ARKIV_RPC_TIMEOUT_MS, 10) || 10000;
+export const RPC_TIMEOUT_MS = parseInt(process.env.ARKIV_RPC_TIMEOUT_MS, 10) || 35000;
 
 /**
  * Mask sensitive data (such as private keys or long hex secrets) from logs
@@ -211,16 +211,30 @@ export const arkivChain = {
   },
 };
 
+// Shared transport fetch options with API key authentication if provided
+const getTransportOptions = () => {
+  const options = {
+    timeout: RPC_TIMEOUT_MS,
+    retryCount: 0,
+  };
+  if (process.env.ARKIV_API_KEY) {
+    options.fetchOptions = {
+      headers: {
+        Authorization: `Bearer ${process.env.ARKIV_API_KEY}`,
+        'x-api-key': process.env.ARKIV_API_KEY,
+      },
+    };
+  }
+  return options;
+};
+
 /**
  * Public client for read-only querying of entities, block status, and events.
  * Configured with timeout. retryCount is 0 on transport so we control read retries explicitly.
  */
 export const publicClient = createPublicClient({
   chain: arkivChain,
-  transport: http(RPC_URL, {
-    timeout: RPC_TIMEOUT_MS,
-    retryCount: 0,
-  }),
+  transport: http(RPC_URL, getTransportOptions()),
 });
 
 /**
@@ -267,10 +281,7 @@ export const getWalletClient = () => {
   const account = getWalletAccount();
   return createWalletClient({
     chain: arkivChain,
-    transport: http(RPC_URL, {
-      timeout: RPC_TIMEOUT_MS,
-      retryCount: 0, // Never blindly retry transactions
-    }),
+    transport: http(RPC_URL, getTransportOptions()),
     account,
   });
 };

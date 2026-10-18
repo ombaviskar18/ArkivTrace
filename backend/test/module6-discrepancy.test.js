@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+process.env.ALLOW_DEMO_ROLE_HEADERS = 'true';
 import app from '../src/app.js';
 import { discrepancyService } from '../src/services/discrepancy.service.js';
 

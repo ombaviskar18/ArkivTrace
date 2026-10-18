@@ -50,43 +50,7 @@ All supply-chain mutations are signed and written to the **Arkiv Tiramisu Testne
 
 ## 🏛️ System Architecture
 
-```mermaid
-flowchart TD
-    subgraph UI ["User & Citizen Interfaces"]
-        FE["Next.js Evidence Portal (React 19)"]
-        TG["Telegram Bot (@ArkivTraceAlert_Bot)"]
-    end
-
-    subgraph Auth ["Security & RBAC Layer"]
-        CK["Clerk JWT Authentication"]
-        MW["auth.middleware.js (Shop-Scoped Protection)"]
-    end
-
-    subgraph Backend ["ArkivTrace Core Engine (Node.js/Express)"]
-        API["REST Controllers (Zod Validated)"]
-        D_SVC["Dispatch & Receipt Reconciliation"]
-        S_SVC["Stock & Variance Math"]
-        T_SVC["Telegram Polling & Notification Engine"]
-    end
-
-    subgraph Arkiv ["Arkiv Tiramisu Blockchain"]
-        RPC["Tiramisu JSON-RPC (Chain ID 7738577)"]
-        ENT["Typed Entities (shop, dispatch, receipt, discrepancy)"]
-        EXP["Arkiv Block Explorer"]
-    end
-
-    FE -->|Clerk Bearer Token| API
-    TG -->|Public Commands & /link| T_SVC
-    API --> MW
-    MW --> CK
-    API --> D_SVC
-    API --> S_SVC
-    D_SVC -->|@arkiv-network/sdk| RPC
-    S_SVC -->|@arkiv-network/sdk| RPC
-    T_SVC -->|Asynchronous setImmediate| RPC
-    RPC --> ENT
-    ENT --> EXP
-```
+![ArkivTrace System Architecture](images/architecture.png)
 
 ---
 

@@ -73,7 +73,23 @@ This document records the technical friction, edge cases, and architectural obse
 
 ---
 
-## 4. Overall Developer Experience Summary
+## 4. Integration Pattern: Operator Assignment via Email
+
+To eliminate administrative friction when onboarding Fair Price Shop operators, ArkivTrace implements automated Clerk user binding and on-chain invitation tracking:
+
+- **Admin-Driven Assignment at Shop Creation:**
+  - The Depot Administrator provides the operator's registered email (`operatorEmail`) in the shop creation form (`POST /api/v1/shops`).
+- **Synchronous Clerk User Lookup & Metadata Binding:**
+  - The Express backend queries the Clerk Backend API (`clerkClient.users.getUserList({ emailAddress: operatorEmail })`).
+  - If the user already exists in Clerk, their `publicMetadata` is immediately updated with `{ role: 'operator', shopId: shopId }`, while preventing duplicate assignments if the user is already bound to another shop (HTTP 409 Conflict).
+- **Asynchronous Invitation Fallback for Unregistered Operators:**
+  - If the operator has not yet signed up with Clerk, the backend creates an immutable `invitation` entity on the Arkiv Tiramisu database (`type=invitation`, `operator_email`, `shop_id`, `status=pending`) and dispatches a Clerk signup invitation email containing a secure signup link.
+- **Telegram Notification:**
+  - Operators linked to the ArkivTrace Telegram Alert Bot receive an immediate notification confirming their assigned shop once the on-chain shop entity transaction commits.
+
+---
+
+## 5. Overall Developer Experience Summary
 
 | Category | Rating | Notes |
 |---|:---:|---|

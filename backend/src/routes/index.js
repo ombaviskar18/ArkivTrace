@@ -9,6 +9,7 @@ import dashboardRoutes from './dashboard.routes.js';
 import recordsRoutes from './records.routes.js';
 import discrepancyRoutes from './discrepancy.routes.js';
 import telegramRoutes from './telegram.routes.js';
+import authRoutes from './auth.routes.js';
 
 const apiRouter = Router();
 
@@ -26,6 +27,7 @@ apiRouter.use('/test', testRoutes);
 
 // ArkivTrace Core v1 Modules
 apiRouter.get('/v1/network/status', testEntityController.getHealth);
+apiRouter.use('/v1/auth', authRoutes);
 apiRouter.use('/v1/shops', shopRoutes);
 apiRouter.use('/v1/dispatches', dispatchRoutes);
 apiRouter.use('/v1/receipts', receiptRoutes);

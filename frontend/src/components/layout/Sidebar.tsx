@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Truck,
-  PackageCheck,
   Warehouse,
   AlertTriangle,
   ShieldCheck,
@@ -13,6 +12,7 @@ import {
   Settings,
   ChevronRight,
   Database,
+  Store,
 } from 'lucide-react';
 import { useUserRole } from '@/lib/auth';
 
@@ -52,9 +52,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           roles: ['admin', 'operator'],
         },
         {
-          name: 'Shop Receipts',
+          name: 'Total Shops',
           href: '/shops',
-          icon: <PackageCheck className="w-4 h-4" />,
+          icon: <Store className="w-4 h-4" />,
           roles: ['admin', 'operator'],
         },
         {

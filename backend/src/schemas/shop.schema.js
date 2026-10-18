@@ -21,6 +21,10 @@ export const createShopSchema = z.object({
       .trim()
       .min(2, 'Operator name must be at least 2 characters')
       .max(64, 'Operator name must not exceed 64 characters'),
+    operatorEmail: z
+      .string({ required_error: 'Operator email is required' })
+      .trim()
+      .email('Invalid dealer / operator email address'),
     operatorAddress: z
       .string()
       .trim()

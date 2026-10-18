@@ -76,7 +76,7 @@ export default function ShopTimelinePage({ params }: PageProps) {
           className="inline-flex items-center gap-1.5 text-xs text-[#91A9B7] hover:text-[#60a5fa] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to All Shop Receipts</span>
+          <span>Back to Total Shops</span>
         </Link>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

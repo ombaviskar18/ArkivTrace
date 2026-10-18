@@ -9,6 +9,7 @@ export interface UserRoleInfo {
   isSignedIn: boolean;
   role: UserRole;
   shopId: string | null;
+  assignedShopIds: string[];
   isAdmin: boolean;
   isOperator: boolean;
   isPublic: boolean;
@@ -29,6 +30,7 @@ export function useUserRole(): UserRoleInfo {
       isSignedIn: false,
       role: 'public',
       shopId: null,
+      assignedShopIds: [],
       isAdmin: false,
       isOperator: false,
       isPublic: true,
@@ -43,6 +45,7 @@ export function useUserRole(): UserRoleInfo {
       isSignedIn: false,
       role: 'public',
       shopId: null,
+      assignedShopIds: [],
       isAdmin: false,
       isOperator: false,
       isPublic: true,
@@ -55,12 +58,27 @@ export function useUserRole(): UserRoleInfo {
   const metadata = (user.publicMetadata || {}) as Record<string, unknown>;
   const rawRole = String(metadata.role || 'public').toLowerCase().trim();
   
+  const rawShopId = metadata.shopId
+    ? String(metadata.shopId).trim().toUpperCase()
+    : Array.isArray(metadata.assignedShopIds) && metadata.assignedShopIds.length > 0
+    ? String(metadata.assignedShopIds[0]).trim().toUpperCase()
+    : Array.isArray(metadata.shopIds) && metadata.shopIds.length > 0
+    ? String(metadata.shopIds[0]).trim().toUpperCase()
+    : null;
+
   let role: UserRole = 'public';
   if (rawRole === 'admin') role = 'admin';
   else if (rawRole === 'operator') role = 'operator';
+  else if (rawShopId) role = 'operator';
   else role = 'public';
 
-  const rawShopId = metadata.shopId ? String(metadata.shopId).trim().toUpperCase() : null;
+  const assignedShopIds = Array.isArray(metadata.assignedShopIds)
+    ? (metadata.assignedShopIds as string[]).map((s) => String(s).trim().toUpperCase()).filter(Boolean)
+    : Array.isArray(metadata.shopIds)
+    ? (metadata.shopIds as string[]).map((s) => String(s).trim().toUpperCase()).filter(Boolean)
+    : rawShopId
+    ? [rawShopId]
+    : [];
 
   const email = user.primaryEmailAddress?.emailAddress || null;
   const name = user.fullName || user.username || email?.split('@')[0] || 'User';
@@ -70,6 +88,7 @@ export function useUserRole(): UserRoleInfo {
     isSignedIn: true,
     role,
     shopId: rawShopId,
+    assignedShopIds,
     isAdmin: role === 'admin',
     isOperator: role === 'operator',
     isPublic: role === 'public',
